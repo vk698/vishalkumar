@@ -28,7 +28,6 @@
         }
     </script>
     
-    <!-- Custom Styles -->
     <style>
         /* ---------- Global Reset & Transitions ---------- */
         * {
@@ -54,7 +53,7 @@
             color: #0f172a;
         }
         
-        /* Scrollbar (dark only for visibility) */
+        /* Scrollbar */
         body.dark ::-webkit-scrollbar {
             width: 8px;
         }
@@ -66,7 +65,7 @@
             border-radius: 10px;
         }
         
-        /* Glassmorphism base */
+        /* Glassmorphism */
         .glass-card {
             background: rgba(15, 25, 45, 0.55);
             backdrop-filter: blur(12px);
@@ -148,10 +147,6 @@
         .carousel-3d {
             perspective: 1200px;
         }
-        .carousel-item {
-            transition: transform 0.5s, opacity 0.5s;
-            transform-style: preserve-3d;
-        }
         
         /* Chatbot widget */
         .chat-widget {
@@ -232,7 +227,7 @@
             font-weight: bold;
         }
         
-        /* Responsive adjustments */
+        /* Responsive */
         @media (max-width: 768px) {
             .counter { font-size: 1.8rem; }
         }
@@ -241,13 +236,28 @@
             animation: spinSlow 12s linear infinite;
         }
         @keyframes spinSlow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        
         .nav-link { position: relative; }
         .nav-link::after { content: ''; position: absolute; width:0; height:2px; bottom:-4px; left:0; background: linear-gradient(90deg,#06b6d4,#a855f7); transition: width 0.3s; }
         .nav-link:hover::after { width:100%; }
+        
         body.light .glass-card { background: rgba(255,255,255,0.7); color:#1e293b; }
         body.light .text-gray-400 { color: #475569; }
         body.light .bg-black\/40 { background: rgba(255,255,255,0.8); }
         body.light .nav-link { color: #0f172a; }
+        
+        /* Fallback for broken images */
+        .img-fallback {
+            background: linear-gradient(135deg, #06b6d4, #a855f7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 2rem;
+            color: white;
+            width: 100%;
+            height: 100%;
+        }
     </style>
 </head>
 <body class="dark overflow-x-hidden">
@@ -282,10 +292,10 @@
         </div>
     </div>
     
-    <!-- Parallax background layers -->
+    <!-- Parallax background -->
     <div class="parallax-layer" id="parallaxLayer"></div>
     
-    <!-- 3D Canvas for particles + rotating shapes (Three.js) -->
+    <!-- 3D Canvas for particles + rotating shapes -->
     <div id="threeCanvas" style="position: fixed; top:0; left:0; width:100%; height:100%; z-index:-2; pointer-events: none;"></div>
     
     <!-- Mouse follower orb -->
@@ -314,15 +324,18 @@
     </nav>
     
     <main class="container mx-auto px-4 py-12 md:py-20 relative z-10">
-        <!-- Hero Section -->
+        <!-- Hero Section with Profile Images (fixed to show your vk.png & vk1.png) -->
         <section class="flex flex-col lg:flex-row items-center gap-12 mb-28 reveal">
             <div class="flex-shrink-0 relative group">
+                <!-- Main profile image: vk.png with fallback -->
                 <div class="relative w-40 h-40 md:w-56 md:h-56 rounded-full overflow-hidden border-4 border-cyan-400 shadow-2xl pulse-ring">
-                    <!-- Placeholder avatar (initials based on Vishal) -->
-                    <div class="w-full h-full bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center text-5xl font-black text-white">VK</div>
+                    <img src="vk.png" alt="Vishal Kumar" class="w-full h-full object-cover" 
+                         onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'img-fallback w-full h-full\'>VK</div>'">
                 </div>
+                <!-- Secondary creative image: vk1.png with fallback -->
                 <div class="absolute -bottom-6 -right-6 w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden border-2 border-purple-400 shadow-xl animate-spin-slow">
-                    <div class="w-full h-full bg-gradient-to-tr from-pink-500 to-cyan-400 flex items-center justify-center text-2xl font-bold text-white">3D</div>
+                    <img src="vk1.png" alt="VK creative" class="w-full h-full object-cover"
+                         onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'img-fallback w-full h-full text-sm\'>3D</div>'">
                 </div>
             </div>
             <div class="text-center lg:text-left">
@@ -454,8 +467,14 @@
         cubeContainer.appendChild(cubeRenderer.domElement);
         
         const cubeGeo = new THREE.BoxGeometry(2, 2, 2);
-        const textures = ['Frontend', 'Backend', 'Database', '3D/Tools', 'DevOps', 'AI/ML'];
-        const materials = textures.map(t => new THREE.MeshStandardMaterial({ color: 0x06b6d4, roughness: 0.3, metalness: 0.7 }));
+        const materials = [
+            new THREE.MeshStandardMaterial({ color: 0x06b6d4, roughness: 0.3, metalness: 0.7 }), // Frontend
+            new THREE.MeshStandardMaterial({ color: 0x3b82f6, roughness: 0.3, metalness: 0.7 }), // Backend
+            new THREE.MeshStandardMaterial({ color: 0x10b981, roughness: 0.3, metalness: 0.7 }), // Database
+            new THREE.MeshStandardMaterial({ color: 0xf59e0b, roughness: 0.3, metalness: 0.7 }), // 3D/Tools
+            new THREE.MeshStandardMaterial({ color: 0xef4444, roughness: 0.3, metalness: 0.7 }), // DevOps
+            new THREE.MeshStandardMaterial({ color: 0x8b5cf6, roughness: 0.3, metalness: 0.7 })  // AI/ML
+        ];
         const cube = new THREE.Mesh(cubeGeo, materials);
         cubeScene.add(cube);
         const ambientCube = new THREE.AmbientLight(0x404060);
@@ -485,10 +504,11 @@
             cubeCamera.updateProjectionMatrix();
         });
         
-        // --- Orb, typing, counters, reveal, theme, music, chatbot, carousel, admin ---
+        // --- Mouse Orb ---
         const orb = document.getElementById('mouseOrb');
         document.addEventListener('mousemove', (e) => { orb.style.left = e.clientX - 30 + 'px'; orb.style.top = e.clientY - 30 + 'px'; });
         
+        // --- Typing Animation ---
         const roles = ["Full-Stack Dev", "3D Artist", "UI/UX Lover", "Open Source Contributor"];
         let roleIndex = 0, charIndex = 0, isDeleting = false;
         const typedSpan = document.getElementById('typed-text');
@@ -502,6 +522,7 @@
         }
         typeEffect();
         
+        // --- Animated Counters ---
         function animateCounter(element, target) {
             let current = 0;
             const increment = target / 50;
@@ -516,10 +537,12 @@
         }, { threshold: 0.5 });
         document.querySelectorAll('.counter').forEach(c => observerCounters.observe(c));
         
+        // --- Scroll Reveal ---
         const reveals = document.querySelectorAll('.reveal');
         const revealObserver = new IntersectionObserver((entries) => { entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('active'); }); }, { threshold: 0.15 });
         reveals.forEach(r => revealObserver.observe(r));
         
+        // --- Dark/Light Mode ---
         const themeToggle = document.getElementById('themeToggle');
         themeToggle.addEventListener('click', () => {
             document.body.classList.toggle('dark');
@@ -529,11 +552,13 @@
             else icon.classList.replace('fa-moon', 'fa-sun');
         });
         
+        // --- Music Toggle ---
         const music = document.getElementById('bgMusic');
         music.volume = 0.2;
         let musicPlaying = false;
         document.getElementById('musicToggle').addEventListener('click', () => { if(musicPlaying) music.pause(); else music.play(); musicPlaying = !musicPlaying; });
         
+        // --- Simple Chatbot ---
         const chatIcon = document.getElementById('chatIcon');
         const chatBox = document.getElementById('chatBox');
         const chatMessages = document.getElementById('chatMessages');
@@ -545,6 +570,7 @@
         sendBtn.addEventListener('click', () => { const msg = chatInput.value.trim(); if(msg) { addMessage(msg, true); botReply(msg); chatInput.value = ''; } });
         chatInput.addEventListener('keypress', (e) => { if(e.key === 'Enter') sendBtn.click(); });
         
+        // --- Testimonials Carousel ---
         const testimonials = [{ text: "Vishal's 3D portfolio blew me away! He's a creative genius.", author: "— Client A" }, { text: "Amazing attention to detail and smooth animations.", author: "— Client B" }, { text: "One of the best developers I've worked with. Highly recommend!", author: "— Client C" }];
         let testiIndex = 0;
         const carouselItem = document.querySelector('.carousel-item');
@@ -552,6 +578,7 @@
         document.getElementById('prevTesti').addEventListener('click', () => { testiIndex = (testiIndex-1+testimonials.length)%testimonials.length; updateTestimonial(); });
         document.getElementById('nextTesti').addEventListener('click', () => { testiIndex = (testiIndex+1)%testimonials.length; updateTestimonial(); });
         
+        // --- Admin Panel ---
         const admin = document.getElementById('adminPanel');
         let visitCount = localStorage.getItem('visitCount') || 0;
         visitCount = parseInt(visitCount)+1;
@@ -560,22 +587,23 @@
         document.getElementById('resetStats').addEventListener('click', () => { localStorage.setItem('visitCount', 0); location.reload(); });
         document.body.addEventListener('dblclick', (e) => { admin.classList.toggle('show'); });
         
+        // --- Mobile Menu ---
         document.getElementById('mobile-menu-button').addEventListener('click', () => { document.getElementById('mobile-menu').classList.toggle('hidden'); });
         document.getElementById('year').innerText = new Date().getFullYear();
+        
+        // --- Parallax effect ---
         window.addEventListener('scroll', () => { const scrolled = window.scrollY; document.getElementById('parallaxLayer').style.transform = `translateY(${scrolled * 0.2}px)`; });
         
-        // --- RESUME DOWNLOAD: PROFESSIONAL PDF GENERATION (NO ALERT) ---
+        // --- RESUME DOWNLOAD: Professional PDF (NO ALERT, direct download) ---
         const resumeBtn = document.getElementById('resumeBtn');
         resumeBtn.addEventListener('click', (e) => {
             e.preventDefault();
-            // Access jsPDF from global (loaded via CDN)
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
             
-            // Add content: Resume of Vishal Kumar
             doc.setFont("helvetica", "bold");
             doc.setFontSize(22);
-            doc.setTextColor(6, 182, 212); // cyan
+            doc.setTextColor(6, 182, 212);
             doc.text("Vishal Kumar", 20, 25);
             
             doc.setFontSize(12);
@@ -640,7 +668,6 @@
             doc.setTextColor(150, 150, 150);
             doc.text("Downloaded from Vishal Kumar's official portfolio — Updated 2026", 20, 270);
             
-            // Save PDF
             doc.save("Vishal_Kumar_Resume.pdf");
         });
     </script>
