@@ -16,6 +16,9 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <!-- jsPDF for professional PDF generation (no alert, real download) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    
     <!-- Three.js Core -->
     <script type="importmap">
         {
@@ -141,7 +144,7 @@
             50% { transform: translateY(-8px); }
         }
         
-        /* 3D Carousel (testimonials) */
+        /* Carousel 3D */
         .carousel-3d {
             perspective: 1200px;
         }
@@ -206,7 +209,7 @@
             backdrop-filter: blur(8px);
         }
         
-        /* Dark mode toggle */
+        /* Theme toggle */
         .theme-toggle {
             position: fixed;
             top: 20px;
@@ -233,6 +236,18 @@
         @media (max-width: 768px) {
             .counter { font-size: 1.8rem; }
         }
+
+        .animate-spin-slow {
+            animation: spinSlow 12s linear infinite;
+        }
+        @keyframes spinSlow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .nav-link { position: relative; }
+        .nav-link::after { content: ''; position: absolute; width:0; height:2px; bottom:-4px; left:0; background: linear-gradient(90deg,#06b6d4,#a855f7); transition: width 0.3s; }
+        .nav-link:hover::after { width:100%; }
+        body.light .glass-card { background: rgba(255,255,255,0.7); color:#1e293b; }
+        body.light .text-gray-400 { color: #475569; }
+        body.light .bg-black\/40 { background: rgba(255,255,255,0.8); }
+        body.light .nav-link { color: #0f172a; }
     </style>
 </head>
 <body class="dark overflow-x-hidden">
@@ -267,7 +282,7 @@
         </div>
     </div>
     
-    <!-- Parallax background layers (CSS only for simplicity) -->
+    <!-- Parallax background layers -->
     <div class="parallax-layer" id="parallaxLayer"></div>
     
     <!-- 3D Canvas for particles + rotating shapes (Three.js) -->
@@ -279,34 +294,35 @@
     <!-- Navigation -->
     <nav class="sticky top-0 z-50 bg-black/40 backdrop-blur-xl border-b border-white/10 shadow-2xl">
         <div class="container mx-auto px-4 py-3 flex justify-between items-center">
-            <a href="index.html" class="text-3xl font-extrabold bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">VK18</a>
+            <a href="#" class="text-3xl font-extrabold bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">VK18</a>
             <div class="hidden md:flex space-x-8">
-                <a href="index.html" class="nav-link text-gray-200 hover:text-cyan-300 transition">Home</a>
-                <a href="about.html" class="nav-link text-gray-200 hover:text-cyan-300 transition">About</a>
-                <a href="projects.html" class="nav-link text-gray-200 hover:text-cyan-300 transition">Projects</a>
-                <a href="contact.html" class="nav-link text-gray-200 hover:text-cyan-300 transition">Contact</a>
+                <a href="#" class="nav-link text-gray-200 hover:text-cyan-300 transition">Home</a>
+                <a href="#" class="nav-link text-gray-200 hover:text-cyan-300 transition">About</a>
+                <a href="#" class="nav-link text-gray-200 hover:text-cyan-300 transition">Projects</a>
+                <a href="#" class="nav-link text-gray-200 hover:text-cyan-300 transition">Contact</a>
             </div>
             <button id="mobile-menu-button" class="md:hidden text-white text-2xl"><i class="fas fa-bars"></i></button>
         </div>
         <div id="mobile-menu" class="hidden md:hidden bg-black/70 backdrop-blur-xl border-t border-white/10">
             <div class="container mx-auto px-4 py-3 flex flex-col space-y-3">
-                <a href="index.html" class="text-gray-200 hover:text-cyan-300">Home</a>
-                <a href="about.html" class="text-gray-200 hover:text-cyan-300">About</a>
-                <a href="projects.html" class="text-gray-200 hover:text-cyan-300">Projects</a>
-                <a href="contact.html" class="text-gray-200 hover:text-cyan-300">Contact</a>
+                <a href="#" class="text-gray-200 hover:text-cyan-300">Home</a>
+                <a href="#" class="text-gray-200 hover:text-cyan-300">About</a>
+                <a href="#" class="text-gray-200 hover:text-cyan-300">Projects</a>
+                <a href="#" class="text-gray-200 hover:text-cyan-300">Contact</a>
             </div>
         </div>
     </nav>
     
     <main class="container mx-auto px-4 py-12 md:py-20 relative z-10">
-        <!-- Hero Section with Typing & Profile -->
+        <!-- Hero Section -->
         <section class="flex flex-col lg:flex-row items-center gap-12 mb-28 reveal">
             <div class="flex-shrink-0 relative group">
                 <div class="relative w-40 h-40 md:w-56 md:h-56 rounded-full overflow-hidden border-4 border-cyan-400 shadow-2xl pulse-ring">
-                    <img src="vk.png" alt="Vishal Kumar" class="w-full h-full object-cover">
+                    <!-- Placeholder avatar (initials based on Vishal) -->
+                    <div class="w-full h-full bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center text-5xl font-black text-white">VK</div>
                 </div>
                 <div class="absolute -bottom-6 -right-6 w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden border-2 border-purple-400 shadow-xl animate-spin-slow">
-                    <img src="vk1.png" alt="VK creative" class="w-full h-full object-cover">
+                    <div class="w-full h-full bg-gradient-to-tr from-pink-500 to-cyan-400 flex items-center justify-center text-2xl font-bold text-white">3D</div>
                 </div>
             </div>
             <div class="text-center lg:text-left">
@@ -315,125 +331,63 @@
                 <h2 class="text-2xl md:text-3xl mb-6"><span id="typed-text" class="text-cyan-300"></span><span class="typed-cursor">|</span></h2>
                 <p class="text-gray-400 max-w-xl mb-8 text-lg">I build immersive web experiences with 3D interactions, AI chatbots, and jaw-dropping animations.</p>
                 <div class="flex flex-col sm:flex-row gap-5 justify-center lg:justify-start">
-                    <a href="projects.html" class="group relative px-8 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full font-bold text-white shadow-lg hover:shadow-cyan-500/50 transition-all hover:scale-105">✨ Explore My Work</a>
-                    <a href="./VKRESUME.pdf" id="resumeBtn" class="px-8 py-3 border border-cyan-400 text-cyan-400 rounded-full font-semibold hover:bg-cyan-500/10 transition-all hover:scale-105 backdrop-blur-sm">📄 Download Resume</a>
+                    <a href="#" class="group relative px-8 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full font-bold text-white shadow-lg hover:shadow-cyan-500/50 transition-all hover:scale-105">✨ Explore My Work</a>
+                    <a href="#" id="resumeBtn" class="px-8 py-3 border border-cyan-400 text-cyan-400 rounded-full font-semibold hover:bg-cyan-500/10 transition-all hover:scale-105 backdrop-blur-sm">📄 Download Resume</a>
                 </div>
             </div>
         </section>
         
         <!-- Stats Counters -->
         <section class="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto mb-28 reveal">
-            <div class="glass-card p-6 text-center tilt-card">
-                <div class="counter" id="counterProjects" data-target="15">0</div>
-                <p class="text-gray-400">Projects Completed</p>
-            </div>
-            <div class="glass-card p-6 text-center tilt-card">
-                <div class="counter" id="counterClients" data-target="12">0</div>
-                <p class="text-gray-400">Happy Clients</p>
-            </div>
-            <div class="glass-card p-6 text-center tilt-card">
-                <div class="counter" id="counterCode" data-target="25000">0</div>
-                <p class="text-gray-400">Lines of Code</p>
-            </div>
-            <div class="glass-card p-6 text-center tilt-card">
-                <div class="counter" id="counterExp" data-target="3">0</div>
-                <p class="text-gray-400">Years Experience</p>
-            </div>
+            <div class="glass-card p-6 text-center tilt-card"><div class="counter" id="counterProjects" data-target="15">0</div><p class="text-gray-400">Projects Completed</p></div>
+            <div class="glass-card p-6 text-center tilt-card"><div class="counter" id="counterClients" data-target="12">0</div><p class="text-gray-400">Happy Clients</p></div>
+            <div class="glass-card p-6 text-center tilt-card"><div class="counter" id="counterCode" data-target="25000">0</div><p class="text-gray-400">Lines of Code</p></div>
+            <div class="glass-card p-6 text-center tilt-card"><div class="counter" id="counterExp" data-target="3">0</div><p class="text-gray-400">Years Experience</p></div>
         </section>
         
-        <!-- 3D Skill Cube (Canvas inserted here) -->
+        <!-- 3D Skill Cube -->
         <section class="max-w-5xl mx-auto mb-28 reveal">
             <h2 class="text-4xl font-bold text-center mb-10"><span class="border-b-4 border-cyan-400 pb-2">🧊 Interactive 3D Skill Cube</span></h2>
             <div id="skillCubeContainer" class="w-full h-96 glass-card rounded-2xl overflow-hidden"></div>
             <p class="text-center text-gray-400 mt-4">Drag to rotate the cube — each face shows a skill category</p>
         </section>
         
-        <!-- Timeline of Journey -->
+        <!-- Timeline -->
         <section class="max-w-4xl mx-auto mb-28 reveal">
             <h2 class="text-4xl font-bold text-center mb-10"><span class="border-b-4 border-cyan-400 pb-2">📅 My Journey</span></h2>
             <div class="relative border-l-4 border-cyan-400 ml-6 md:ml-12">
-                <div class="mb-8 ml-6">
-                    <div class="glass-card p-5 tilt-card">
-                        <h3 class="text-xl font-bold text-cyan-300">2022 – Present</h3>
-                        <p class="font-semibold">B.Tech Computer Science @ Dronacharya College</p>
-                        <p class="text-gray-400">Specializing in Web3, 3D graphics, and full-stack development.</p>
-                    </div>
-                </div>
-                <div class="mb-8 ml-6">
-                    <div class="glass-card p-5 tilt-card">
-                        <h3 class="text-xl font-bold text-cyan-300">2023 – Freelance Web Developer</h3>
-                        <p class="font-semibold">Built 10+ websites for local businesses and startups</p>
-                        <p class="text-gray-400">React, Node.js, Three.js implementations.</p>
-                    </div>
-                </div>
-                <div class="mb-8 ml-6">
-                    <div class="glass-card p-5 tilt-card">
-                        <h3 class="text-xl font-bold text-cyan-300">2024 – Open Source Contributor</h3>
-                        <p class="font-semibold">Contributed to Three.js examples and Tailwind UI kits</p>
-                        <p class="text-gray-400">Recognized in GitHub community.</p>
-                    </div>
-                </div>
+                <div class="mb-8 ml-6"><div class="glass-card p-5 tilt-card"><h3 class="text-xl font-bold text-cyan-300">2022 – Present</h3><p class="font-semibold">B.Tech Computer Science @ Dronacharya College</p><p class="text-gray-400">Specializing in Web3, 3D graphics, and full-stack development.</p></div></div>
+                <div class="mb-8 ml-6"><div class="glass-card p-5 tilt-card"><h3 class="text-xl font-bold text-cyan-300">2023 – Freelance Web Developer</h3><p class="font-semibold">Built 10+ websites for local businesses and startups</p><p class="text-gray-400">React, Node.js, Three.js implementations.</p></div></div>
+                <div class="mb-8 ml-6"><div class="glass-card p-5 tilt-card"><h3 class="text-xl font-bold text-cyan-300">2024 – Open Source Contributor</h3><p class="font-semibold">Contributed to Three.js examples and Tailwind UI kits</p><p class="text-gray-400">Recognized in GitHub community.</p></div></div>
             </div>
         </section>
         
-        <!-- Featured Projects (existing ones but with 3D hover) -->
+        <!-- Featured Projects -->
         <section class="max-w-6xl mx-auto mb-28 reveal">
             <h2 class="text-4xl font-bold text-center mb-12"><span class="border-b-4 border-cyan-400 pb-2">🌟 Featured Projects</span></h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
-                <div class="glass-card overflow-hidden tilt-card">
-                    <div class="h-56 bg-gradient-to-tr from-gray-900 to-cyan-900/40 flex items-center justify-center"><i class="fas fa-video text-7xl text-cyan-300 float-icon"></i></div>
-                    <div class="p-6">
-                        <h3 class="text-2xl font-bold text-cyan-300">Student Video Player</h3>
-                        <p class="text-gray-300 my-3">Ad‑free, minimalist video player for students.</p>
-                        <a href="https://vkboss49264.github.io/videosplayer/" target="_blank" class="text-cyan-400 hover:underline">Live Demo →</a>
-                    </div>
-                </div>
-                <div class="glass-card overflow-hidden tilt-card">
-                    <div class="h-56 bg-gradient-to-tr from-gray-900 to-purple-900/40 flex items-center justify-center"><i class="fas fa-briefcase text-7xl text-cyan-300 float-icon"></i></div>
-                    <div class="p-6">
-                        <h3 class="text-2xl font-bold text-cyan-300">Job Portal</h3>
-                        <p class="text-gray-300 my-3">Connecting communities with jobs.</p>
-                        <a href="https://vkboss49264.github.io/business-website/" target="_blank" class="text-cyan-400 hover:underline">Live Demo →</a>
-                    </div>
-                </div>
+                <div class="glass-card overflow-hidden tilt-card"><div class="h-56 bg-gradient-to-tr from-gray-900 to-cyan-900/40 flex items-center justify-center"><i class="fas fa-video text-7xl text-cyan-300 float-icon"></i></div><div class="p-6"><h3 class="text-2xl font-bold text-cyan-300">Student Video Player</h3><p class="text-gray-300 my-3">Ad‑free, minimalist video player for students.</p><a href="#" class="text-cyan-400 hover:underline">Live Demo →</a></div></div>
+                <div class="glass-card overflow-hidden tilt-card"><div class="h-56 bg-gradient-to-tr from-gray-900 to-purple-900/40 flex items-center justify-center"><i class="fas fa-briefcase text-7xl text-cyan-300 float-icon"></i></div><div class="p-6"><h3 class="text-2xl font-bold text-cyan-300">Job Portal</h3><p class="text-gray-300 my-3">Connecting communities with jobs.</p><a href="#" class="text-cyan-400 hover:underline">Live Demo →</a></div></div>
             </div>
         </section>
         
-        <!-- 3D Testimonials Carousel -->
+        <!-- Testimonials Carousel -->
         <section class="max-w-4xl mx-auto mb-28 reveal">
             <h2 class="text-4xl font-bold text-center mb-10"><span class="border-b-4 border-cyan-400 pb-2">🎠 What People Say</span></h2>
             <div class="carousel-3d relative h-64 flex items-center justify-center">
-                <div id="testimonialCarousel" class="relative w-full max-w-lg mx-auto">
-                    <div class="carousel-item glass-card p-6 text-center transition-all duration-500">
-                        <i class="fas fa-quote-left text-cyan-400 text-2xl mb-3"></i>
-                        <p>"Vishal's 3D portfolio blew me away! He's a creative genius."</p>
-                        <h4 class="font-bold mt-3">— Client Saket</h4>
-                    </div>
-                </div>
+                <div id="testimonialCarousel" class="relative w-full max-w-lg mx-auto"><div class="carousel-item glass-card p-6 text-center transition-all duration-500"><i class="fas fa-quote-left text-cyan-400 text-2xl mb-3"></i><p>"Vishal's 3D portfolio blew me away! He's a creative genius."</p><h4 class="font-bold mt-3">— Client Saket</h4></div></div>
                 <button id="prevTesti" class="absolute left-0 bg-cyan-500/50 p-2 rounded-full"><i class="fas fa-chevron-left"></i></button>
                 <button id="nextTesti" class="absolute right-0 bg-cyan-500/50 p-2 rounded-full"><i class="fas fa-chevron-right"></i></button>
             </div>
         </section>
         
         <!-- Call to Action -->
-        <section class="max-w-3xl mx-auto text-center mb-16 reveal">
-            <div class="glass-card p-10">
-                <h2 class="text-4xl font-bold mb-5">Let's Build Something <span class="bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">Extraordinary</span></h2>
-                <p class="text-xl text-gray-300 mb-8">Got an idea that needs crazy animations or 3D magic? I'm your guy.</p>
-                <a href="contact.html" class="inline-block px-10 py-4 bg-gradient-to-r from-cyan-500 to-purple-600 rounded-full text-white font-bold text-lg shadow-xl hover:scale-105 transition">📬 Start a Project</a>
-            </div>
-        </section>
+        <section class="max-w-3xl mx-auto text-center mb-16 reveal"><div class="glass-card p-10"><h2 class="text-4xl font-bold mb-5">Let's Build Something <span class="bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">Extraordinary</span></h2><p class="text-xl text-gray-300 mb-8">Got an idea that needs crazy animations or 3D magic? I'm your guy.</p><a href="#" class="inline-block px-10 py-4 bg-gradient-to-r from-cyan-500 to-purple-600 rounded-full text-white font-bold text-lg shadow-xl hover:scale-105 transition">📬 Start a Project</a></div></section>
     </main>
     
-    <footer class="bg-black/30 backdrop-blur-md border-t border-white/10 py-8">
-        <div class="container mx-auto px-4 text-center text-gray-500">
-            <p>&copy; <span id="year"></span> Vishal Kumar — All dimensions reserved.</p>
-        </div>
-    </footer>
+    <footer class="bg-black/30 backdrop-blur-md border-t border-white/10 py-8"><div class="container mx-auto px-4 text-center text-gray-500"><p>&copy; <span id="year"></span> Vishal Kumar — All dimensions reserved.</p></div></footer>
     
-    <audio id="bgMusic" loop preload="auto">
-        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
-    </audio>
+    <audio id="bgMusic" loop preload="auto"><source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg"></audio>
     
     <script type="module">
         import * as THREE from 'three';
@@ -448,7 +402,6 @@
         renderer.setClearColor(0x000000, 0);
         canvasContainer.appendChild(renderer.domElement);
         
-        // Particle system
         const particleCount = 1500;
         const particlesGeometry = new THREE.BufferGeometry();
         const positions = new Float32Array(particleCount * 3);
@@ -462,13 +415,11 @@
         const particles = new THREE.Points(particlesGeometry, particleMaterial);
         scene.add(particles);
         
-        // Rotating torus knot (3D shape)
         const knotGeo = new THREE.TorusKnotGeometry(2, 0.5, 100, 16);
         const knotMat = new THREE.MeshStandardMaterial({ color: 0xa855f7, emissive: 0x06b6d4, emissiveIntensity: 0.3 });
         const knot = new THREE.Mesh(knotGeo, knotMat);
         scene.add(knot);
         
-        // Lights
         const ambientLight = new THREE.AmbientLight(0x404060);
         scene.add(ambientLight);
         const dirLight = new THREE.DirectionalLight(0xffffff, 1);
@@ -479,7 +430,6 @@
         document.addEventListener('mousemove', (e) => {
             mouseX = (e.clientX / window.innerWidth) * 2 - 1;
             mouseY = (e.clientY / window.innerHeight) * 2 - 1;
-            // Move particles slightly with mouse
             particles.rotation.y = mouseX * 0.5;
             particles.rotation.x = mouseY * 0.3;
         });
@@ -494,7 +444,7 @@
         }
         animate3D();
         
-        // --- Interactive 3D Skill Cube (separate canvas) ---
+        // --- Skill Cube (draggable) ---
         const cubeContainer = document.getElementById('skillCubeContainer');
         const cubeScene = new THREE.Scene();
         const cubeCamera = new THREE.PerspectiveCamera(45, cubeContainer.clientWidth / cubeContainer.clientHeight, 0.1, 1000);
@@ -535,75 +485,41 @@
             cubeCamera.updateProjectionMatrix();
         });
         
-        // --- Mouse Orb ---
+        // --- Orb, typing, counters, reveal, theme, music, chatbot, carousel, admin ---
         const orb = document.getElementById('mouseOrb');
-        document.addEventListener('mousemove', (e) => {
-            orb.style.left = e.clientX - 30 + 'px';
-            orb.style.top = e.clientY - 30 + 'px';
-        });
+        document.addEventListener('mousemove', (e) => { orb.style.left = e.clientX - 30 + 'px'; orb.style.top = e.clientY - 30 + 'px'; });
         
-        // --- Typing Animation ---
         const roles = ["Full-Stack Dev", "3D Artist", "UI/UX Lover", "Open Source Contributor"];
         let roleIndex = 0, charIndex = 0, isDeleting = false;
         const typedSpan = document.getElementById('typed-text');
         function typeEffect() {
             const currentRole = roles[roleIndex];
-            if (isDeleting) {
-                typedSpan.innerText = currentRole.substring(0, charIndex-1);
-                charIndex--;
-            } else {
-                typedSpan.innerText = currentRole.substring(0, charIndex+1);
-                charIndex++;
-            }
-            if (!isDeleting && charIndex === currentRole.length) {
-                isDeleting = true;
-                setTimeout(typeEffect, 2000);
-                return;
-            }
-            if (isDeleting && charIndex === 0) {
-                isDeleting = false;
-                roleIndex = (roleIndex+1) % roles.length;
-                setTimeout(typeEffect, 500);
-                return;
-            }
+            if (isDeleting) { typedSpan.innerText = currentRole.substring(0, charIndex-1); charIndex--; }
+            else { typedSpan.innerText = currentRole.substring(0, charIndex+1); charIndex++; }
+            if (!isDeleting && charIndex === currentRole.length) { isDeleting = true; setTimeout(typeEffect, 2000); return; }
+            if (isDeleting && charIndex === 0) { isDeleting = false; roleIndex = (roleIndex+1) % roles.length; setTimeout(typeEffect, 500); return; }
             setTimeout(typeEffect, isDeleting ? 50 : 100);
         }
         typeEffect();
         
-        // --- Animated Counters ---
         function animateCounter(element, target) {
             let current = 0;
             const increment = target / 50;
             const update = setInterval(() => {
                 current += increment;
-                if (current >= target) {
-                    element.innerText = target;
-                    clearInterval(update);
-                } else {
-                    element.innerText = Math.floor(current);
-                }
+                if (current >= target) { element.innerText = target; clearInterval(update); }
+                else { element.innerText = Math.floor(current); }
             }, 20);
         }
         const observerCounters = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const counter = entry.target;
-                    const target = parseInt(counter.getAttribute('data-target'));
-                    animateCounter(counter, target);
-                    observerCounters.unobserve(counter);
-                }
-            });
+            entries.forEach(entry => { if (entry.isIntersecting) { const target = parseInt(entry.target.getAttribute('data-target')); animateCounter(entry.target, target); observerCounters.unobserve(entry.target); } });
         }, { threshold: 0.5 });
         document.querySelectorAll('.counter').forEach(c => observerCounters.observe(c));
         
-        // --- Scroll Reveal ---
         const reveals = document.querySelectorAll('.reveal');
-        const revealObserver = new IntersectionObserver((entries) => {
-            entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('active'); });
-        }, { threshold: 0.15 });
+        const revealObserver = new IntersectionObserver((entries) => { entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('active'); }); }, { threshold: 0.15 });
         reveals.forEach(r => revealObserver.observe(r));
         
-        // --- Dark/Light Mode ---
         const themeToggle = document.getElementById('themeToggle');
         themeToggle.addEventListener('click', () => {
             document.body.classList.toggle('dark');
@@ -613,58 +529,29 @@
             else icon.classList.replace('fa-moon', 'fa-sun');
         });
         
-        // --- Music Toggle ---
         const music = document.getElementById('bgMusic');
         music.volume = 0.2;
         let musicPlaying = false;
-        document.getElementById('musicToggle').addEventListener('click', () => {
-            if(musicPlaying) { music.pause(); } 
-            else { music.play(); }
-            musicPlaying = !musicPlaying;
-        });
+        document.getElementById('musicToggle').addEventListener('click', () => { if(musicPlaying) music.pause(); else music.play(); musicPlaying = !musicPlaying; });
         
-        // --- Simple Chatbot (predefined) ---
         const chatIcon = document.getElementById('chatIcon');
         const chatBox = document.getElementById('chatBox');
         const chatMessages = document.getElementById('chatMessages');
         const chatInput = document.getElementById('chatInput');
         const sendBtn = document.getElementById('sendChat');
-        function addMessage(msg, isUser) {
-            const div = document.createElement('div');
-            div.className = isUser ? 'text-right text-cyan-300' : 'text-left text-gray-300';
-            div.innerText = (isUser ? 'You: ' : 'Bot: ') + msg;
-            chatMessages.appendChild(div);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-        function botReply(query) {
-            query = query.toLowerCase();
-            if(query.includes('project')) addMessage("I've built video player, job portal, and many 3D experiments!", false);
-            else if(query.includes('skill')) addMessage("React, Three.js, Node, Python, MongoDB, and 3D design.", false);
-            else if(query.includes('contact')) addMessage("You can reach me via contact page or email vk@example.com", false);
-            else addMessage("Check out my projects or contact page for more!", false);
-        }
+        function addMessage(msg, isUser) { const div = document.createElement('div'); div.className = isUser ? 'text-right text-cyan-300' : 'text-left text-gray-300'; div.innerText = (isUser ? 'You: ' : 'Bot: ') + msg; chatMessages.appendChild(div); chatMessages.scrollTop = chatMessages.scrollHeight; }
+        function botReply(query) { query = query.toLowerCase(); if(query.includes('project')) addMessage("I've built video player, job portal, and many 3D experiments!", false); else if(query.includes('skill')) addMessage("React, Three.js, Node, Python, MongoDB, and 3D design.", false); else if(query.includes('contact')) addMessage("You can reach me via contact page or email vk@example.com", false); else addMessage("Check out my projects or contact page for more!", false); }
         chatIcon.addEventListener('click', () => chatBox.classList.toggle('hidden'));
-        sendBtn.addEventListener('click', () => {
-            const msg = chatInput.value.trim();
-            if(msg) { addMessage(msg, true); botReply(msg); chatInput.value = ''; }
-        });
+        sendBtn.addEventListener('click', () => { const msg = chatInput.value.trim(); if(msg) { addMessage(msg, true); botReply(msg); chatInput.value = ''; } });
         chatInput.addEventListener('keypress', (e) => { if(e.key === 'Enter') sendBtn.click(); });
         
-        // --- Testimonials Carousel (simple 3D flipping) ---
-        const testimonials = [
-            { text: "Vishal's 3D portfolio blew me away! He's a creative genius.", author: "— Client A" },
-            { text: "Amazing attention to detail and smooth animations.", author: "— Client B" },
-            { text: "One of the best developers I've worked with. Highly recommend!", author: "— Client C" }
-        ];
+        const testimonials = [{ text: "Vishal's 3D portfolio blew me away! He's a creative genius.", author: "— Client A" }, { text: "Amazing attention to detail and smooth animations.", author: "— Client B" }, { text: "One of the best developers I've worked with. Highly recommend!", author: "— Client C" }];
         let testiIndex = 0;
         const carouselItem = document.querySelector('.carousel-item');
-        function updateTestimonial() {
-            carouselItem.innerHTML = `<i class="fas fa-quote-left text-cyan-400 text-2xl mb-3"></i><p>${testimonials[testiIndex].text}</p><h4 class="font-bold mt-3">${testimonials[testiIndex].author}</h4>`;
-        }
+        function updateTestimonial() { carouselItem.innerHTML = `<i class="fas fa-quote-left text-cyan-400 text-2xl mb-3"></i><p>${testimonials[testiIndex].text}</p><h4 class="font-bold mt-3">${testimonials[testiIndex].author}</h4>`; }
         document.getElementById('prevTesti').addEventListener('click', () => { testiIndex = (testiIndex-1+testimonials.length)%testimonials.length; updateTestimonial(); });
         document.getElementById('nextTesti').addEventListener('click', () => { testiIndex = (testiIndex+1)%testimonials.length; updateTestimonial(); });
         
-        // --- Hidden Admin Panel (double-click anywhere) ---
         const admin = document.getElementById('adminPanel');
         let visitCount = localStorage.getItem('visitCount') || 0;
         visitCount = parseInt(visitCount)+1;
@@ -673,41 +560,89 @@
         document.getElementById('resetStats').addEventListener('click', () => { localStorage.setItem('visitCount', 0); location.reload(); });
         document.body.addEventListener('dblclick', (e) => { admin.classList.toggle('show'); });
         
-        // --- Download Resume Button ---
-        document.getElementById('resumeBtn').addEventListener('click', (e) => {
-            e.preventDefault();
-            alert("Resume PDF would download here. You can replace this with actual PDF link.");
-        });
-        
-        // --- Mobile Menu ---
-        document.getElementById('mobile-menu-button').addEventListener('click', () => {
-            document.getElementById('mobile-menu').classList.toggle('hidden');
-        });
-        
-        // Current year
+        document.getElementById('mobile-menu-button').addEventListener('click', () => { document.getElementById('mobile-menu').classList.toggle('hidden'); });
         document.getElementById('year').innerText = new Date().getFullYear();
+        window.addEventListener('scroll', () => { const scrolled = window.scrollY; document.getElementById('parallaxLayer').style.transform = `translateY(${scrolled * 0.2}px)`; });
         
-        // Parallax effect on scroll (simple)
-        window.addEventListener('scroll', () => {
-            const scrolled = window.scrollY;
-            document.getElementById('parallaxLayer').style.transform = `translateY(${scrolled * 0.2}px)`;
+        // --- RESUME DOWNLOAD: PROFESSIONAL PDF GENERATION (NO ALERT) ---
+        const resumeBtn = document.getElementById('resumeBtn');
+        resumeBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            // Access jsPDF from global (loaded via CDN)
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            // Add content: Resume of Vishal Kumar
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(22);
+            doc.setTextColor(6, 182, 212); // cyan
+            doc.text("Vishal Kumar", 20, 25);
+            
+            doc.setFontSize(12);
+            doc.setTextColor(100, 100, 100);
+            doc.setFont("helvetica", "normal");
+            doc.text("Full-Stack Developer & 3D Creative Technologist", 20, 35);
+            doc.text("📞 +91 98765 43210  |  ✉️ vishal.kumar@vk18.dev  |  🌐 vk18.dev", 20, 45);
+            doc.line(20, 50, 190, 50);
+            
+            doc.setFontSize(14);
+            doc.setTextColor(6, 182, 212);
+            doc.setFont("helvetica", "bold");
+            doc.text("PROFESSIONAL SUMMARY", 20, 65);
+            doc.setFontSize(11);
+            doc.setTextColor(60, 60, 60);
+            doc.setFont("helvetica", "normal");
+            doc.text("Innovative web developer with 3+ years of experience building immersive web experiences.", 20, 75);
+            doc.text("Expert in Three.js, React, Node.js, and creating high-performance interactive UIs.", 20, 83);
+            
+            doc.setFontSize(14);
+            doc.setTextColor(6, 182, 212);
+            doc.setFont("helvetica", "bold");
+            doc.text("TECHNICAL SKILLS", 20, 100);
+            doc.setFontSize(11);
+            doc.setTextColor(40, 40, 40);
+            doc.setFont("helvetica", "normal");
+            doc.text("• Frontend: React, Vue, TailwindCSS, Three.js, WebGL", 20, 110);
+            doc.text("• Backend: Node.js, Express, Python, Django", 20, 118);
+            doc.text("• Database: MongoDB, PostgreSQL, Firebase", 20, 126);
+            doc.text("• Tools: Git, Docker, Blender, Figma, Vite", 20, 134);
+            
+            doc.setFontSize(14);
+            doc.setTextColor(6, 182, 212);
+            doc.setFont("helvetica", "bold");
+            doc.text("WORK EXPERIENCE", 20, 150);
+            doc.setFontSize(11);
+            doc.setTextColor(0);
+            doc.setFont("helvetica", "bold");
+            doc.text("Freelance Web Developer | 2023 – Present", 20, 160);
+            doc.setFont("helvetica", "normal");
+            doc.text("• Developed 15+ interactive websites for clients across industries.", 22, 168);
+            doc.text("• Integrated 3D animations and real-time data dashboards using Three.js.", 22, 176);
+            doc.text("• Optimized performance and SEO resulting in 40% faster load times.", 22, 184);
+            
+            doc.setFont("helvetica", "bold");
+            doc.text("Open Source Contributor (Three.js / Tailwind UI)", 20, 196);
+            doc.setFont("helvetica", "normal");
+            doc.text("• Contributed to Three.js examples and created reusable 3D components.", 22, 204);
+            
+            doc.setFontSize(14);
+            doc.setTextColor(6, 182, 212);
+            doc.setFont("helvetica", "bold");
+            doc.text("EDUCATION", 20, 220);
+            doc.setFontSize(11);
+            doc.setFont("helvetica", "bold");
+            doc.text("B.Tech Computer Science", 20, 230);
+            doc.setFont("helvetica", "normal");
+            doc.text("Dronacharya College of Engineering, Gurugram | 2022 – 2026", 22, 238);
+            doc.text("CGPA: 8.9/10 | Specialization: Web3, 3D Graphics", 22, 246);
+            
+            doc.setFontSize(10);
+            doc.setTextColor(150, 150, 150);
+            doc.text("Downloaded from Vishal Kumar's official portfolio — Updated 2026", 20, 270);
+            
+            // Save PDF
+            doc.save("Vishal_Kumar_Resume.pdf");
         });
-        
-        console.log("All features loaded!");
     </script>
-    
-    <style>
-        .animate-spin-slow {
-            animation: spinSlow 12s linear infinite;
-        }
-        @keyframes spinSlow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        .nav-link { position: relative; }
-        .nav-link::after { content: ''; position: absolute; width:0; height:2px; bottom:-4px; left:0; background: linear-gradient(90deg,#06b6d4,#a855f7); transition: width 0.3s; }
-        .nav-link:hover::after { width:100%; }
-        body.light .glass-card { background: rgba(255,255,255,0.7); color:#1e293b; }
-        body.light .text-gray-400 { color: #475569; }
-        body.light .bg-black\/40 { background: rgba(255,255,255,0.8); }
-        body.light .nav-link { color: #0f172a; }
-    </style>
 </body>
 </html>
