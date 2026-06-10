@@ -1,118 +1,409 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contact - Vishal Kumar</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Contact | Vishal Kumar (VK18)</title>
+    
+    <!-- SEO Meta -->
+    <meta name="description" content="Get in touch with Vishal Kumar (VK18) – web developer available for freelance work, collaborations, and projects.">
+    <meta name="keywords" content="Contact Vishal Kumar, VK18, Web Developer, Freelance">
+    <meta name="author" content="Vishal Kumar">
+    
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/js/all.min.js" crossorigin="anonymous"></script>
-    <script>
-        function toggleMenu() {
-            document.getElementById("menu").classList.toggle("hidden");
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Three.js Core -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.128.0/build/three.module.js"
+            }
         }
     </script>
+    
     <style>
-        /* Background Animation */
-        body {
-            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
-            background-size: 400% 400%;
-            animation: gradientBG 10s ease infinite;
+        /* ---------- Global Styles (same as index/about) ---------- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { transition: background-color 0.3s ease, color 0.3s ease; font-family: 'Inter', system-ui, sans-serif; overflow-x: hidden; }
+        body.dark { background: radial-gradient(circle at 10% 20%, #0a0f1e, #03050b); color: #e2e8f0; }
+        body.light { background: radial-gradient(circle at 10% 20%, #f0f9ff, #e0f2fe); color: #0f172a; }
+        
+        .glass-card {
+            background: rgba(15, 25, 45, 0.55);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(6, 182, 212, 0.25);
+            border-radius: 1.5rem;
+            transition: all 0.3s ease;
         }
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+        body.light .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            border-color: rgba(6, 182, 212, 0.4);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
         }
-
-        /* Glassmorphism Effect */
-        .glass {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            padding: 20px;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        
+        .tilt-card { transition: all 0.3s cubic-bezier(0.03, 0.98, 0.52, 0.99); transform-style: preserve-3d; }
+        .tilt-card:hover { transform: rotateX(3deg) rotateY(5deg) translateY(-8px); box-shadow: 0 25px 40px -12px rgba(6, 182, 212, 0.3); }
+        
+        .reveal { opacity: 0; transform: translateY(40px); transition: all 0.8s cubic-bezier(0.2, 0.9, 0.4, 1.1); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+        
+        /* Progress bar */
+        #progress-bar {
+            position: fixed; top: 0; left: 0; width: 0%; height: 4px; background: linear-gradient(90deg, #06b6d4, #a855f7);
+            z-index: 10000; transition: width 0.2s;
         }
-        .glass:hover {
-            transform: scale(1.02);
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+        
+        /* Chatbot widget */
+        .chat-widget { position: fixed; bottom: 20px; right: 20px; z-index: 1000; }
+        .chat-box { width: 280px; border-radius: 20px; transition: all 0.3s; }
+        
+        /* Admin panel */
+        .admin-panel { position: fixed; bottom: 20px; left: 20px; z-index: 999; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+        .admin-panel.show { opacity: 1; pointer-events: auto; }
+        
+        /* Music & theme toggles */
+        .music-toggle, .theme-toggle {
+            position: fixed; background: rgba(0,0,0,0.5); border-radius: 50%; width: 45px; height: 45px;
+            display: flex; align-items: center; justify-content: center; cursor: pointer; backdrop-filter: blur(4px); z-index: 1001;
         }
-
-        /* Fade-in Animation */
-        .fade-in {
-            animation: fadeIn 1s ease-in-out;
+        .theme-toggle { top: 20px; right: 20px; }
+        .music-toggle { bottom: 20px; right: 20px; }
+        
+        /* Navigation link underline */
+        .nav-link { position: relative; }
+        .nav-link::after {
+            content: ''; position: absolute; width: 0; height: 2px; bottom: -4px; left: 0;
+            background: linear-gradient(90deg, #06b6d4, #a855f7); transition: width 0.3s;
         }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
+        .nav-link:hover::after, .nav-link.active::after { width: 100%; }
+        
+        /* Cursor trail */
+        .trail { position: fixed; width: 8px; height: 8px; background: cyan; border-radius: 50%; pointer-events: none; z-index: 10000; opacity: 0.7; transition: 0.1s; }
+        
+        /* Form inputs light/dark */
+        input, textarea {
+            transition: all 0.3s;
         }
+        body.dark input, body.dark textarea {
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(6,182,212,0.3);
+            color: white;
+        }
+        body.light input, body.light textarea {
+            background: rgba(255,255,255,0.8);
+            border: 1px solid #06b6d4;
+            color: #0f172a;
+        }
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #06b6d4;
+            box-shadow: 0 0 0 2px rgba(6,182,212,0.3);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) { .counter { font-size: 1.8rem; } }
     </style>
 </head>
-<body class="text-white fade-in">
-
-    <!-- Navigation Bar -->
-    <nav class="flex justify-between items-center p-4 bg-white bg-opacity-20 shadow-lg rounded-lg mx-4 mt-4 backdrop-blur-md">
-        <h1 class="text-2xl font-bold">Vishal Kumar</h1>
-        <button class="lg:hidden text-2xl" onclick="toggleMenu()">☰</button>
-        <ul id="menu" class="hidden lg:flex space-x-6">
-            <li><a href="index.html" class="hover:text-yellow-300 transition duration-300">Home</a></li>
-            <li><a href="about.html" class="hover:text-yellow-300 transition duration-300">About</a></li>
-            <li><a href="projects.html" class="hover:text-yellow-300 transition duration-300">Projects</a></li>
-            <li><a href="contact.html" class="hover:text-yellow-300 transition duration-300">Contact</a></li>
-        </ul>
+<body class="dark overflow-x-hidden">
+    <div id="progress-bar"></div>
+    <div id="loader" style="position:fixed; top:0; left:0; width:100%; height:100%; background:#0a0f1e; z-index:2000; display:flex; justify-content:center; align-items:center;"><div class="spinner" style="width:50px; height:50px; border:5px solid #06b6d4; border-top-color:transparent; border-radius:50%; animation: spin 1s linear infinite;"></div></div>
+    <style>@keyframes spin { to { transform: rotate(360deg); } }</style>
+    
+    <!-- Fixed UI -->
+    <div class="theme-toggle" id="themeToggle"><i class="fas fa-moon text-cyan-300 text-xl"></i></div>
+    <div class="music-toggle" id="musicToggle"><i class="fas fa-music text-cyan-300 text-xl"></i></div>
+    
+    <!-- Admin Panel -->
+    <div id="adminPanel" class="admin-panel glass-card p-4 w-64">
+        <h3 class="text-cyan-400 font-bold">🔐 Admin</h3>
+        <p>Visits: <span id="visitCount">0</span></p>
+        <button id="resetStats" class="mt-2 bg-cyan-500 px-3 py-1 rounded text-xs">Reset</button>
+        <p class="text-xs mt-2 italic">Double‑click to close</p>
+    </div>
+    
+    <!-- Chatbot Widget (same as index) -->
+    <div class="chat-widget">
+        <div id="chatIcon" class="bg-cyan-500 rounded-full w-12 h-12 flex items-center justify-center cursor-pointer shadow-lg"><i class="fas fa-robot text-white text-xl"></i></div>
+        <div id="chatBox" class="chat-box glass-card p-3 hidden mt-2">
+            <div id="chatMessages" class="h-48 overflow-y-auto text-sm space-y-2 mb-2"></div>
+            <div class="flex gap-2"><input type="text" id="chatInput" placeholder="Ask me..." class="flex-1 bg-black/30 rounded px-2 py-1 text-sm"><button id="sendChat" class="bg-cyan-500 px-2 rounded text-white">Send</button></div>
+            <p class="text-xs text-gray-400 mt-1">Try: projects, skills, contact</p>
+        </div>
+    </div>
+    
+    <!-- Three.js Canvas & Mouse Orb -->
+    <div id="threeCanvas" style="position:fixed; top:0; left:0; width:100%; height:100%; z-index:-2; pointer-events:none;"></div>
+    <div id="mouseOrb" style="position:fixed; width:60px; height:60px; border-radius:50%; background:radial-gradient(circle, rgba(6,182,212,0.6), rgba(168,85,247,0.3)); filter:blur(8px); pointer-events:none; z-index:9999; mix-blend-mode:screen;"></div>
+    
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-50 bg-black/40 backdrop-blur-xl border-b border-white/10 shadow-2xl">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <a href="index.html" class="text-3xl font-extrabold bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">VK18</a>
+            <div class="hidden md:flex space-x-8">
+                <a href="index.html" class="nav-link text-gray-200 hover:text-cyan-300 transition">Home</a>
+                <a href="about.html" class="nav-link text-gray-200 hover:text-cyan-300 transition">About</a>
+                <a href="projects.html" class="nav-link text-gray-200 hover:text-cyan-300 transition">Projects</a>
+                <a href="contact.html" class="nav-link active text-cyan-300 transition">Contact</a>
+            </div>
+            <button id="mobile-menu-button" class="md:hidden text-white text-2xl"><i class="fas fa-bars"></i></button>
+        </div>
+        <div id="mobile-menu" class="hidden md:hidden bg-black/70 backdrop-blur-xl border-t border-white/10">
+            <div class="container mx-auto px-4 py-3 flex flex-col space-y-3">
+                <a href="index.html" class="text-gray-200 hover:text-cyan-300">Home</a>
+                <a href="about.html" class="text-gray-200 hover:text-cyan-300">About</a>
+                <a href="projects.html" class="text-gray-200 hover:text-cyan-300">Projects</a>
+                <a href="contact.html" class="text-cyan-300">Contact</a>
+            </div>
+        </div>
     </nav>
-
-    <!-- Contact Section -->
-    <section class="max-w-3xl mx-auto text-center mt-12 p-8 glass fade-in">
-        <h2 class="text-4xl font-bold mb-4">Get in Touch</h2>
-        <p class="text-lg mb-6">Let's connect! Whether it's for a project, collaboration, or just a friendly chat, I'm always open.</p>
+    
+    <main class="container mx-auto px-4 py-12 md:py-20 relative z-10">
+        <!-- Contact Header -->
+        <section class="text-center mb-12 reveal">
+            <h1 class="text-5xl md:text-6xl font-black mb-4">Get in <span class="bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">Touch</span></h1>
+            <p class="text-xl text-gray-300 max-w-2xl mx-auto">Let's connect! Whether it's for a project, collaboration, or just a friendly chat, I'm always open.</p>
+        </section>
         
-        <form id="contact-form" action="https://formspree.io/f/xqaergwo" method="POST" class="flex flex-col space-y-4">
-            <input type="text" name="name" placeholder="Your Name" class="p-3 rounded bg-white bg-opacity-30 w-full focus:ring-2 focus:ring-yellow-300 transition duration-300" required>
-            <input type="email" name="email" placeholder="Your Email" class="p-3 rounded bg-white bg-opacity-30 w-full focus:ring-2 focus:ring-yellow-300 transition duration-300" required>
-            <input type="text" name="subject" placeholder="Subject" class="p-3 rounded bg-white bg-opacity-30 w-full focus:ring-2 focus:ring-yellow-300 transition duration-300" required>
-            <textarea name="message" placeholder="Your Message" class="p-3 rounded bg-white bg-opacity-30 w-full focus:ring-2 focus:ring-yellow-300 transition duration-300" rows="5" required></textarea>
-            <button type="submit" class="bg-yellow-400 text-black py-3 rounded shadow-md hover:bg-yellow-500 transition duration-300 transform hover:scale-105">Send Message</button>
-        </form>
-
-        <script>
-            document.getElementById("contact-form").addEventListener("submit", async function(event) {
-                event.preventDefault();
+        <!-- Contact Form & Info Grid -->
+        <section class="max-w-5xl mx-auto mb-20 reveal">
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Contact Form -->
+                <div class="glass-card p-6 tilt-card">
+                    <h2 class="text-2xl font-bold mb-5 text-cyan-300"><i class="fas fa-envelope mr-2"></i> Send a Message</h2>
+                    <form id="contact-form" action="https://formspree.io/f/xqaergwo" method="POST" class="flex flex-col space-y-4">
+                        <input type="text" name="name" placeholder="Your Name" required class="w-full p-3 rounded-lg bg-black/30 border border-cyan-500/30 focus:border-cyan-400 transition">
+                        <input type="email" name="email" placeholder="Your Email" required class="w-full p-3 rounded-lg bg-black/30 border border-cyan-500/30 focus:border-cyan-400 transition">
+                        <input type="text" name="subject" placeholder="Subject" required class="w-full p-3 rounded-lg bg-black/30 border border-cyan-500/30 focus:border-cyan-400 transition">
+                        <textarea name="message" placeholder="Your Message" rows="5" required class="w-full p-3 rounded-lg bg-black/30 border border-cyan-500/30 focus:border-cyan-400 transition"></textarea>
+                        <button type="submit" class="bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold py-3 rounded-full hover:shadow-lg hover:shadow-cyan-500/30 transition hover:scale-105">Send Message <i class="fas fa-paper-plane ml-2"></i></button>
+                        <p id="formStatus" class="text-sm text-center mt-2"></p>
+                    </form>
+                </div>
                 
-                const form = event.target;
-                const formData = new FormData(form);
-                
+                <!-- Direct Contact Info -->
+                <div class="glass-card p-6 tilt-card">
+                    <h2 class="text-2xl font-bold mb-5 text-cyan-300"><i class="fas fa-address-card mr-2"></i> Direct Contact</h2>
+                    <div class="space-y-5">
+                        <div class="flex items-center gap-3">
+                            <i class="fas fa-envelope text-cyan-400 text-xl w-6"></i>
+                            <a href="mailto:vishalkumar049263@gmail.com" class="hover:text-cyan-300 transition break-all">vishalkumar049263@gmail.com</a>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <i class="fas fa-phone-alt text-cyan-400 text-xl w-6"></i>
+                            <a href="tel:+918789297252" class="hover:text-cyan-300 transition">+91 8789297252</a>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <i class="fab fa-whatsapp text-cyan-400 text-xl w-6"></i>
+                            <a href="https://wa.me/918789297252" target="_blank" class="hover:text-cyan-300 transition">Chat on WhatsApp</a>
+                        </div>
+                    </div>
+                    
+                    <hr class="my-6 border-cyan-500/30">
+                    
+                    <h3 class="text-xl font-bold mb-4">Social Media</h3>
+                    <div class="flex gap-5 justify-start">
+                        <a href="https://github.com/vkboss49264" target="_blank" class="text-3xl text-gray-400 hover:text-cyan-300 transition hover:scale-110"><i class="fab fa-github"></i></a>
+                        <a href="https://www.linkedin.com/in/vishal-kumar-b8b056297" target="_blank" class="text-3xl text-gray-400 hover:text-cyan-300 transition hover:scale-110"><i class="fab fa-linkedin"></i></a>
+                        <a href="https://www.instagram.com/v_i_s_h_a_l_1827" target="_blank" class="text-3xl text-gray-400 hover:text-cyan-300 transition hover:scale-110"><i class="fab fa-instagram"></i></a>
+                        <a href="https://www.facebook.com/share/19kb4C6TZ5/" target="_blank" class="text-3xl text-gray-400 hover:text-cyan-300 transition hover:scale-110"><i class="fab fa-facebook"></i></a>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Optional: Map or extra CTA -->
+        <section class="max-w-3xl mx-auto text-center mb-16 reveal">
+            <div class="glass-card p-8">
+                <h2 class="text-2xl font-bold mb-3">Prefer a quick chat?</h2>
+                <p class="text-gray-400 mb-4">I usually respond within 24 hours. Let's build something amazing together!</p>
+                <a href="https://wa.me/918789297252" target="_blank" class="inline-block px-6 py-3 bg-green-500 hover:bg-green-600 rounded-full font-bold text-white transition hover:scale-105"><i class="fab fa-whatsapp mr-2"></i> WhatsApp Me</a>
+            </div>
+        </section>
+    </main>
+    
+    <footer class="bg-black/30 backdrop-blur-md border-t border-white/10 py-8 mt-8">
+        <div class="container mx-auto px-4 text-center text-gray-500">
+            <p>&copy; <span id="year"></span> Vishal Kumar — All dimensions reserved.</p>
+        </div>
+    </footer>
+    
+    <audio id="bgMusic" loop><source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg"></audio>
+    
+    <script type="module">
+        import * as THREE from 'three';
+        
+        // --- Three.js Background (identical) ---
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.z = 30;
+        const renderer = new THREE.WebGLRenderer({ alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setClearColor(0x000000, 0);
+        document.getElementById('threeCanvas').appendChild(renderer.domElement);
+        
+        const particlesGeo = new THREE.BufferGeometry();
+        const positions = new Float32Array(1500 * 3);
+        for (let i = 0; i < 1500; i++) {
+            positions[i*3] = (Math.random() - 0.5) * 100;
+            positions[i*3+1] = (Math.random() - 0.5) * 60;
+            positions[i*3+2] = (Math.random() - 0.5) * 80 - 40;
+        }
+        particlesGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        const particles = new THREE.Points(particlesGeo, new THREE.PointsMaterial({ color: 0x06b6d4, size: 0.2, transparent: true }));
+        scene.add(particles);
+        
+        const knotGeo = new THREE.TorusKnotGeometry(2, 0.5, 100, 16);
+        const knot = new THREE.Mesh(knotGeo, new THREE.MeshStandardMaterial({ color: 0xa855f7, emissive: 0x06b6d4, emissiveIntensity: 0.3 }));
+        scene.add(knot);
+        
+        scene.add(new THREE.AmbientLight(0x404060));
+        const light = new THREE.DirectionalLight(0xffffff, 1);
+        light.position.set(5,10,7);
+        scene.add(light);
+        
+        function animate() {
+            requestAnimationFrame(animate);
+            knot.rotation.x += 0.005;
+            knot.rotation.y += 0.01;
+            knot.rotation.z += 0.007;
+            particles.rotation.y += 0.0005;
+            renderer.render(scene, camera);
+        }
+        animate();
+        
+        // --- Mouse Orb ---
+        const orb = document.getElementById('mouseOrb');
+        document.addEventListener('mousemove', (e) => {
+            orb.style.left = e.clientX - 30 + 'px';
+            orb.style.top = e.clientY - 30 + 'px';
+        });
+        
+        // --- Scroll Reveal ---
+        const reveals = document.querySelectorAll('.reveal');
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('active'); });
+        }, { threshold: 0.15 });
+        reveals.forEach(r => revealObserver.observe(r));
+        
+        // --- Dark/Light Mode ---
+        const themeToggle = document.getElementById('themeToggle');
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark');
+            document.body.classList.toggle('light');
+            const icon = themeToggle.querySelector('i');
+            if(document.body.classList.contains('dark')) icon.classList.replace('fa-sun', 'fa-moon');
+            else icon.classList.replace('fa-moon', 'fa-sun');
+        });
+        
+        // --- Music Toggle ---
+        const music = document.getElementById('bgMusic');
+        music.volume = 0.2;
+        let musicPlaying = false;
+        document.getElementById('musicToggle').addEventListener('click', () => {
+            musicPlaying ? music.pause() : music.play();
+            musicPlaying = !musicPlaying;
+        });
+        
+        // --- Chatbot (same as index) ---
+        const chatIcon = document.getElementById('chatIcon');
+        const chatBox = document.getElementById('chatBox');
+        const chatMessages = document.getElementById('chatMessages');
+        const chatInput = document.getElementById('chatInput');
+        const sendBtn = document.getElementById('sendChat');
+        function addMessage(msg, isUser) {
+            const div = document.createElement('div');
+            div.className = isUser ? 'text-right text-cyan-300' : 'text-left text-gray-300';
+            div.innerText = (isUser ? 'You: ' : 'Bot: ') + msg;
+            chatMessages.appendChild(div);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+        function botReply(query) {
+            query = query.toLowerCase();
+            if(query.includes('project')) addMessage("Check out my Student Video Player and Job Portal projects!", false);
+            else if(query.includes('contact')) addMessage("You can email me at vishalkumar049263@gmail.com or WhatsApp +91 8789297252", false);
+            else if(query.includes('skill')) addMessage("I specialize in React, Three.js, Node.js, and 3D animations.", false);
+            else addMessage("Feel free to use the contact form or reach me directly!", false);
+        }
+        chatIcon.addEventListener('click', () => chatBox.classList.toggle('hidden'));
+        sendBtn.addEventListener('click', () => {
+            const msg = chatInput.value.trim();
+            if(msg) { addMessage(msg, true); botReply(msg); chatInput.value = ''; }
+        });
+        chatInput.addEventListener('keypress', (e) => { if(e.key === 'Enter') sendBtn.click(); });
+        
+        // --- Admin Panel ---
+        let visitCount = localStorage.getItem('visitCount') || 0;
+        visitCount = parseInt(visitCount)+1;
+        localStorage.setItem('visitCount', visitCount);
+        document.getElementById('visitCount').innerText = visitCount;
+        document.getElementById('resetStats').addEventListener('click', () => { localStorage.setItem('visitCount', 0); location.reload(); });
+        document.body.addEventListener('dblclick', () => document.getElementById('adminPanel').classList.toggle('show'));
+        
+        // --- Cursor Trails ---
+        const trailCount = 10; let trails = [];
+        for(let i=0;i<trailCount;i++) { let trail = document.createElement('div'); trail.className = 'trail'; document.body.appendChild(trail); trails.push(trail); }
+        let trailIndex = 0;
+        document.addEventListener('mousemove', (e) => {
+            let trail = trails[trailIndex];
+            trail.style.left = e.clientX - 4 + 'px';
+            trail.style.top = e.clientY - 4 + 'px';
+            trail.style.opacity = '0.7';
+            setTimeout(() => trail.style.opacity = '0', 200);
+            trailIndex = (trailIndex+1) % trailCount;
+        });
+        
+        // --- Progress Bar ---
+        window.addEventListener('scroll', () => {
+            const winScroll = document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - window.innerHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById('progress-bar').style.width = scrolled + '%';
+        });
+        
+        // --- Mobile Menu ---
+        document.getElementById('mobile-menu-button').addEventListener('click', () => {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        });
+        
+        // --- Year & Loader ---
+        document.getElementById('year').innerText = new Date().getFullYear();
+        window.addEventListener('load', () => { document.getElementById('loader').style.display = 'none'; });
+        
+        // --- Contact Form Handler (Formspree) ---
+        const form = document.getElementById('contact-form');
+        const statusMsg = document.getElementById('formStatus');
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(form);
+            statusMsg.innerText = "Sending...";
+            statusMsg.classList.add('text-cyan-300');
+            try {
                 const response = await fetch(form.action, {
-                    method: form.method,
+                    method: 'POST',
                     body: formData,
-                    headers: { "Accept": "application/json" }
+                    headers: { 'Accept': 'application/json' }
                 });
-
                 if (response.ok) {
-                    alert("Message sent successfully!");
+                    statusMsg.innerText = "✅ Message sent successfully! I'll reply soon.";
+                    statusMsg.classList.remove('text-cyan-300');
+                    statusMsg.classList.add('text-green-400');
                     form.reset();
                 } else {
-                    alert("Oops! Something went wrong. Please try again.");
+                    throw new Error();
                 }
-            });
-        </script>
-
-        <!-- Direct Contact Information -->
-        <div class="mt-8 text-center">
-            <h3 class="text-xl font-bold">Or Contact Me Directly</h3>
-            <p>Email: <a href="mailto:vishalkumar049263@gmail.com" class="text-yellow-300 hover:underline">vishalkumar049263@gmail.com</a></p>
-            <p>Phone: <a href="tel:+918789297252" class="text-yellow-300 hover:underline">+91 8789297252</a></p>
-            <p>WhatsApp: <a href="https://wa.me/918789297252" class="text-yellow-300 hover:underline">Chat on WhatsApp</a></p>
-        </div>
-
-        <!-- Social Media Links -->
-        <div class="mt-6 flex justify-center space-x-6">
-            <a href="https://github.com/vkboss49264" class="text-yellow-300 text-3xl hover:text-white transition transform hover:scale-110"><i class="fa-brands fa-github"></i></a>
-            <a href="https://www.linkedin.com/in/vishal-kumar-b8b056297" class="text-yellow-300 text-3xl hover:text-white transition transform hover:scale-110"><i class="fa-brands fa-linkedin"></i></a>
-            <a href="https://www.instagram.com/v_i_s_h_a_l_1827" class="text-yellow-300 text-3xl hover:text-white transition transform hover:scale-110"><i class="fa-brands fa-instagram"></i></a>
-            <a href="https://www.facebook.com/share/19kb4C6TZ5/" class="text-yellow-300 text-3xl hover:text-white transition transform hover:scale-110"><i class="fa-brands fa-facebook"></i></a>
-        </div>
-    </section>
-
+            } catch (error) {
+                statusMsg.innerText = "❌ Oops! Something went wrong. Please try again.";
+                statusMsg.classList.remove('text-cyan-300');
+                statusMsg.classList.add('text-red-400');
+            }
+            setTimeout(() => { statusMsg.innerText = ""; }, 5000);
+        });
+        
+        console.log("Contact page loaded with same 3D style!");
+    </script>
 </body>
 </html>
