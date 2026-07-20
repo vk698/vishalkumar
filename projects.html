@@ -3,54 +3,146 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Projects | Vishal Kumar (VK18)</title>
-    
+    <title>Projects | Vishal Kumar (VK18) – Web Developer & 3D Artist</title>
+
     <!-- SEO Meta -->
-    <meta name="description" content="Explore web development projects by Vishal Kumar (VK18) including a Free Fire tournament platform, student video player, job portal, and more.">
-    <meta name="keywords" content="Vishal Kumar, VK18, Projects, Free Fire Tournament, Video Player, Job Portal">
+    <meta name="description" content="Explore projects by Vishal Kumar (VK18) – Free Fire tournament, AI Hindi subtitle generator, video player, job portal, e‑commerce, and more.">
+    <meta name="keywords" content="Vishal Kumar, VK18, projects, Free Fire tournament, video player, job portal, AI subtitles, e‑commerce, portfolio, web development, Three.js">
     <meta name="author" content="Vishal Kumar">
-    
+    <meta name="robots" content="index, follow">
+    <meta name="language" content="English">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://vk698.github.io/vishalkumar/projects.html">
+    <meta property="og:title" content="Projects | Vishal Kumar (VK18)">
+    <meta property="og:description" content="Explore projects by Vishal Kumar – Free Fire tournament, AI Hindi subtitle generator, video player, job portal, e‑commerce, and more.">
+    <meta property="og:image" content="https://vk698.github.io/vishalkumar/og-image.jpg">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://vk698.github.io/vishalkumar/projects.html">
+    <meta property="twitter:title" content="Projects | Vishal Kumar (VK18)">
+    <meta property="twitter:description" content="Explore projects by Vishal Kumar – Free Fire tournament, AI Hindi subtitle generator, video player, job portal, e‑commerce, and more.">
+    <meta property="twitter:image" content="https://vk698.github.io/vishalkumar/og-image.jpg">
+
+    <!-- Canonical -->
+    <link rel="canonical" href="https://vk698.github.io/vishalkumar/projects.html">
+
+    <!-- Google Fonts (Inter) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Font Awesome (still used for social icons, etc.) -->
+
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Three.js Core -->
+
+    <!-- Three.js Core (updated) -->
     <script type="importmap">
         {
             "imports": {
-                "three": "https://unpkg.com/three@0.128.0/build/three.module.js"
+                "three": "https://unpkg.com/three@0.170.0/build/three.module.js"
             }
         }
     </script>
-    
+
     <style>
-        /* ---------- Global Styles (same as other pages) ---------- */
+        /* ---------- Global Styles (matching index) ---------- */
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { transition: background-color 0.3s ease, color 0.3s ease; font-family: 'Inter', system-ui, sans-serif; overflow-x: hidden; }
-        body.dark { background: radial-gradient(circle at 10% 20%, #0a0f1e, #03050b); color: #e2e8f0; }
-        body.light { background: radial-gradient(circle at 10% 20%, #f0f9ff, #e0f2fe); color: #0f172a; }
-        
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            transition: background 0.5s ease;
+        }
+        /* Morphing Background */
+        body.dark {
+            background: linear-gradient(-45deg, #0a0f1e, #1a1a2e, #16213e, #0a0f1e);
+            background-size: 400% 400%;
+            animation: morphGradient 20s ease infinite;
+            color: #e2e8f0;
+        }
+        body.light {
+            background: linear-gradient(-45deg, #f0f9ff, #e0f2fe, #f0f9ff, #e0f2fe);
+            background-size: 400% 400%;
+            animation: morphGradient 20s ease infinite;
+            color: #0f172a;
+        }
+        @keyframes morphGradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        body.dark ::-webkit-scrollbar { width: 8px; }
+        body.dark ::-webkit-scrollbar-track { background: #0f172a; }
+        body.dark ::-webkit-scrollbar-thumb { background: #06b6d4; border-radius: 10px; }
+
+        /* Glass Card with animated gradient border */
         .glass-card {
             background: rgba(15, 25, 45, 0.55);
             backdrop-filter: blur(12px);
-            border: 1px solid rgba(6, 182, 212, 0.25);
+            border: 2px solid rgba(6, 182, 212, 0.25);
             border-radius: 1.5rem;
             transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
         body.light .glass-card {
             background: rgba(255, 255, 255, 0.7);
             border-color: rgba(6, 182, 212, 0.4);
             box-shadow: 0 8px 20px rgba(0,0,0,0.05);
         }
-        
-        .tilt-card { transition: all 0.3s cubic-bezier(0.03, 0.98, 0.52, 0.99); transform-style: preserve-3d; }
-        .tilt-card:hover { transform: rotateX(3deg) rotateY(5deg) translateY(-8px); box-shadow: 0 25px 40px -12px rgba(6, 182, 212, 0.3); }
-        
-        .reveal { opacity: 0; transform: translateY(40px); transition: all 0.8s cubic-bezier(0.2, 0.9, 0.4, 1.1); }
-        .reveal.active { opacity: 1; transform: translateY(0); }
-        
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: 1.5rem;
+            padding: 2px;
+            background: conic-gradient(from 0deg, #06b6d4, #a855f7, #ec4899, #3b82f6, #06b6d4);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            animation: rotateBorder 6s linear infinite;
+            opacity: 0;
+            transition: opacity 0.4s;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .glass-card:hover::before { opacity: 1; }
+        @keyframes rotateBorder { to { transform: rotate(360deg); } }
+        .glass-card > * { position: relative; z-index: 1; }
+
+        /* Tilt Card */
+        .tilt-card {
+            transition: all 0.3s cubic-bezier(0.03, 0.98, 0.52, 0.99);
+            transform-style: preserve-3d;
+        }
+        .tilt-card:hover {
+            transform: rotateX(3deg) rotateY(5deg) translateY(-8px);
+            box-shadow: 0 25px 40px -12px rgba(6, 182, 212, 0.3);
+        }
+
+        /* Reveal (with stagger) */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .stagger-item {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+        }
+        .stagger-item.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
         /* Project tags */
         .project-tag {
             display: inline-block;
@@ -66,13 +158,14 @@
             background: rgba(6, 182, 212, 0.15);
             color: #0891b2;
         }
-        
-        /* Project image styling */
+
+        /* Project image with Ken Burns effect */
         .project-img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: transform 0.3s ease;
+            transition: transform 6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            transform: scale(1);
         }
         .img-container {
             overflow: hidden;
@@ -80,57 +173,131 @@
             min-height: 200px;
         }
         .tilt-card:hover .project-img {
-            transform: scale(1.05);
+            transform: scale(1.08) translateX(3px);
         }
-        
+
+        /* Magnetic button */
+        .magnetic-btn {
+            transition: transform 0.2s cubic-bezier(0.03, 0.98, 0.52, 0.99);
+            will-change: transform;
+        }
+
+        /* Neon glow on links */
+        .neon-icon {
+            transition: all 0.3s ease;
+        }
+        .neon-icon:hover {
+            color: #06b6d4 !important;
+            text-shadow: 0 0 10px rgba(6,182,212,0.8), 0 0 20px rgba(6,182,212,0.5), 0 0 40px rgba(168,85,247,0.4);
+            animation: neonPulse 1.5s ease-in-out infinite;
+        }
+        @keyframes neonPulse {
+            0%,100% { text-shadow: 0 0 10px rgba(6,182,212,0.8), 0 0 20px rgba(6,182,212,0.5), 0 0 40px rgba(168,85,247,0.4); }
+            50% { text-shadow: 0 0 20px rgba(6,182,212,1), 0 0 40px rgba(6,182,212,0.8), 0 0 80px rgba(168,85,247,0.6); }
+        }
+
+        /* Shimmer text */
+        .shimmer-text {
+            display: inline-block;
+            background: linear-gradient(120deg, #06b6d4 0%, #a855f7 25%, #ec4899 50%, #06b6d4 75%, #a855f7 100%);
+            background-size: 300% 100%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shimmerMove 4s linear infinite;
+        }
+        @keyframes shimmerMove {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 300% 50%; }
+        }
+
         /* Progress bar */
         #progress-bar {
-            position: fixed; top: 0; left: 0; width: 0%; height: 4px; background: linear-gradient(90deg, #06b6d4, #a855f7);
+            position: fixed; top: 0; left: 0; width: 0%; height: 4px;
+            background: linear-gradient(90deg, #06b6d4, #a855f7);
             z-index: 10000; transition: width 0.2s;
         }
-        
-        /* Chatbot widget */
+
+        /* Chatbot */
         .chat-widget { position: fixed; bottom: 20px; right: 20px; z-index: 1000; }
         .chat-box { width: 280px; border-radius: 20px; transition: all 0.3s; }
-        
+
         /* Admin panel */
         .admin-panel { position: fixed; bottom: 20px; left: 20px; z-index: 999; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
         .admin-panel.show { opacity: 1; pointer-events: auto; }
-        
+
         /* Music & theme toggles */
         .music-toggle, .theme-toggle {
-            position: fixed; background: rgba(0,0,0,0.5); border-radius: 50%; width: 45px; height: 45px;
-            display: flex; align-items: center; justify-content: center; cursor: pointer; backdrop-filter: blur(4px); z-index: 1001;
+            position: fixed; background: rgba(0,0,0,0.6); border-radius: 50%; width: 45px; height: 45px;
+            display: flex; align-items: center; justify-content: center; cursor: pointer; backdrop-filter: blur(8px); z-index: 1001;
         }
         .theme-toggle { top: 20px; right: 20px; }
         .music-toggle { bottom: 20px; right: 20px; }
-        
-        /* Navigation link underline */
+
+        /* Navigation link */
         .nav-link { position: relative; }
         .nav-link::after {
-            content: ''; position: absolute; width: 0; height: 2px; bottom: -4px; left: 0;
+            content: ''; position: absolute; width:0; height:2px; bottom:-4px; left:0;
             background: linear-gradient(90deg, #06b6d4, #a855f7); transition: width 0.3s;
         }
-        .nav-link:hover::after, .nav-link.active::after { width: 100%; }
-        
+        .nav-link:hover::after, .nav-link.active::after { width:100%; }
+
         /* Cursor trail */
         .trail { position: fixed; width: 8px; height: 8px; background: cyan; border-radius: 50%; pointer-events: none; z-index: 10000; opacity: 0.7; transition: 0.1s; }
-        
+
         /* Responsive */
         @media (max-width: 768px) {
             .img-container { min-height: 180px; }
         }
+
+        /* Page Transition Overlay */
+        #transitionOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 99999;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.8s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle, #06b6d4, #0a0f1e 70%);
+        }
+        #transitionOverlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        #transitionOverlay .portal-ring {
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            border: 4px solid rgba(168,85,247,0.8);
+            box-shadow: 0 0 60px rgba(6,182,212,0.8), inset 0 0 60px rgba(168,85,247,0.4);
+            transition: all 1s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+        }
+        #transitionOverlay.active .portal-ring {
+            width: 200vmax;
+            height: 200vmax;
+        }
     </style>
 </head>
 <body class="dark overflow-x-hidden">
+    <!-- Page Transition Overlay -->
+    <div id="transitionOverlay"><div class="portal-ring"></div></div>
+
+    <!-- Progress Bar -->
     <div id="progress-bar"></div>
+
+    <!-- Loader -->
     <div id="loader" style="position:fixed; top:0; left:0; width:100%; height:100%; background:#0a0f1e; z-index:2000; display:flex; justify-content:center; align-items:center;"><div class="spinner" style="width:50px; height:50px; border:5px solid #06b6d4; border-top-color:transparent; border-radius:50%; animation: spin 1s linear infinite;"></div></div>
     <style>@keyframes spin { to { transform: rotate(360deg); } }</style>
-    
+
     <!-- Fixed UI -->
     <div class="theme-toggle" id="themeToggle"><i class="fas fa-moon text-cyan-300 text-xl"></i></div>
     <div class="music-toggle" id="musicToggle"><i class="fas fa-music text-cyan-300 text-xl"></i></div>
-    
+
     <!-- Admin Panel -->
     <div id="adminPanel" class="admin-panel glass-card p-4 w-64">
         <h3 class="text-cyan-400 font-bold">🔐 Admin</h3>
@@ -138,8 +305,8 @@
         <button id="resetStats" class="mt-2 bg-cyan-500 px-3 py-1 rounded text-xs">Reset</button>
         <p class="text-xs mt-2 italic">Double‑click to close</p>
     </div>
-    
-    <!-- Chatbot Widget -->
+
+    <!-- Chatbot -->
     <div class="chat-widget">
         <div id="chatIcon" class="bg-cyan-500 rounded-full w-12 h-12 flex items-center justify-center cursor-pointer shadow-lg"><i class="fas fa-robot text-white text-xl"></i></div>
         <div id="chatBox" class="chat-box glass-card p-3 hidden mt-2">
@@ -148,213 +315,439 @@
             <p class="text-xs text-gray-400 mt-1">Try: projects, skills, contact</p>
         </div>
     </div>
-    
+
     <!-- Three.js Canvas & Mouse Orb -->
     <div id="threeCanvas" style="position:fixed; top:0; left:0; width:100%; height:100%; z-index:-2; pointer-events:none;"></div>
     <div id="mouseOrb" style="position:fixed; width:60px; height:60px; border-radius:50%; background:radial-gradient(circle, rgba(6,182,212,0.6), rgba(168,85,247,0.3)); filter:blur(8px); pointer-events:none; z-index:9999; mix-blend-mode:screen;"></div>
-    
+
     <!-- Navigation -->
     <nav class="sticky top-0 z-50 bg-black/40 backdrop-blur-xl border-b border-white/10 shadow-2xl">
         <div class="container mx-auto px-4 py-3 flex justify-between items-center">
             <a href="index.html" class="text-3xl font-extrabold bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">VK18</a>
             <div class="hidden md:flex space-x-8">
-                <a href="index.html" class="nav-link text-gray-200 hover:text-cyan-300 transition">Home</a>
-                <a href="about.html" class="nav-link text-gray-200 hover:text-cyan-300 transition">About</a>
-                <a href="projects.html" class="nav-link active text-cyan-300 transition">Projects</a>
-                <a href="contact.html" class="nav-link text-gray-200 hover:text-cyan-300 transition">Contact</a>
+                <a href="index.html" class="nav-link text-gray-200 hover:text-cyan-300 transition" data-page="index">Home</a>
+                <a href="about.html" class="nav-link text-gray-200 hover:text-cyan-300 transition" data-page="about">About</a>
+                <a href="projects.html" class="nav-link active text-cyan-300 transition" data-page="projects">Projects</a>
+                <a href="contact.html" class="nav-link text-gray-200 hover:text-cyan-300 transition" data-page="contact">Contact</a>
             </div>
             <button id="mobile-menu-button" class="md:hidden text-white text-2xl"><i class="fas fa-bars"></i></button>
         </div>
         <div id="mobile-menu" class="hidden md:hidden bg-black/70 backdrop-blur-xl border-t border-white/10">
             <div class="container mx-auto px-4 py-3 flex flex-col space-y-3">
-                <a href="index.html" class="text-gray-200 hover:text-cyan-300">Home</a>
-                <a href="about.html" class="text-gray-200 hover:text-cyan-300">About</a>
-                <a href="projects.html" class="text-cyan-300">Projects</a>
-                <a href="contact.html" class="text-gray-200 hover:text-cyan-300">Contact</a>
+                <a href="index.html" data-page="index">Home</a>
+                <a href="about.html" data-page="about">About</a>
+                <a href="projects.html" data-page="projects">Projects</a>
+                <a href="contact.html" data-page="contact">Contact</a>
             </div>
         </div>
     </nav>
-    
+
     <main class="container mx-auto px-4 py-12 md:py-20 relative z-10">
         <!-- Projects Header -->
         <section class="text-center mb-16 reveal">
-            <h1 class="text-5xl md:text-6xl font-black mb-4">My <span class="bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">Projects</span></h1>
-            <p class="text-xl text-gray-300 max-w-2xl mx-auto">Explore my web development work and gaming platform projects</p>
+            <h1 class="text-5xl md:text-6xl font-black mb-4">My <span class="shimmer-text">Projects</span></h1>
+            <p class="text-xl text-gray-300 max-w-2xl mx-auto">Explore my web development work and creative experiments</p>
         </section>
-        
-        <!-- Featured Projects (with images) -->
+
+        <!-- All Projects (8 projects) -->
         <section class="max-w-5xl mx-auto mb-20 space-y-12">
-            <!-- Free Fire Tournament -->
-            <div class="glass-card overflow-hidden tilt-card reveal">
-                 <div class="md:flex">
+
+            <!-- 1. Free Fire Tournament -->
+            <div class="glass-card overflow-hidden tilt-card reveal stagger-item">
+                <div class="md:flex">
                     <div class="md:w-1/2 img-container">
-                        <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?w=600&h=400&fit=crop" alt="Free Fire Tournament" class="project-img w-full h-full object-cover">
+                        <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?w=600&h=400&fit=crop" alt="Free Fire Tournament" class="project-img w-full h-full object-cover" loading="lazy">
                     </div>
                     <div class="md:w-1/2 p-6 md:p-8">
                         <h2 class="text-3xl font-bold text-cyan-300 mb-3">Free Fire Tournament Platform</h2>
-                        <p class="text-gray-300 mb-4">A complete esports tournament management system for Free Fire players. Allows registration, schedule viewing, rankings, and match tracking with Firebase backend.</p>
+                        <p class="text-gray-300 mb-4">Complete esports tournament management system for Free Fire players – registration, schedule, rankings, match tracking with Firebase.</p>
                         <div class="mb-5 flex flex-wrap">
-                            <span class="project-tag">HTML5</span>
-                            <span class="project-tag">CSS3</span>
-                            <span class="project-tag">JavaScript</span>
-                            <span class="project-tag">Firebase</span>
-                            <span class="project-tag">Tournament System</span>
+                            <span class="project-tag">HTML5</span><span class="project-tag">CSS3</span>
+                            <span class="project-tag">JavaScript</span><span class="project-tag">Firebase</span>
+                            <span class="project-tag">Tournament</span>
                         </div>
-                        <a href="https://vkboss49264.github.io/ff-tournament-backend/" target="_blank" class="inline-block px-5 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full text-white font-semibold hover:scale-105 transition">Live Demo →</a>
+                        <div class="flex flex-wrap gap-3">
+                            <a href="https://vk698.github.io/ff-tournament/" target="_blank" class="magnetic-btn inline-block px-5 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full text-white font-semibold hover:scale-105 transition">Live Demo →</a>
+                            <a href="https://github.com/vk698" target="_blank" class="magnetic-btn inline-block px-5 py-2 border border-cyan-400 text-cyan-400 rounded-full font-semibold hover:bg-cyan-500/10 transition hover:scale-105">GitHub →</a>
+                        </div>
                     </div>
                 </div>
             </div>
-            
-            <!-- Student Video Player    -->
-            <div class="glass-card overflow-hidden tilt-card reveal">
+
+            <!-- 2. AI Hindi Subtitle Generator -->
+            <div class="glass-card overflow-hidden tilt-card reveal stagger-item">
                 <div class="md:flex flex-row-reverse">
                     <div class="md:w-1/2 img-container">
-                        <img src="https://images.unsplash.com/photo-1594904351111-a072f80b1a71?w=600&h=400&fit=crop" alt="Student Video Player" class="project-img w-full h-full object-cover">
+                        <img src="https://images.unsplash.com/photo-1531482615713-2afd69097998?w=600&h=400&fit=crop" alt="AI Hindi Subtitle Generator" class="project-img w-full h-full object-cover" loading="lazy">
                     </div>
                     <div class="md:w-1/2 p-6 md:p-8">
-                        <h2 class="text-3xl font-bold text-cyan-300 mb-3">Student Video Player</h2>
-                        <p class="text-gray-300 mb-4">Ad‑free, distraction‑free video player designed for educational content. Features playback speed control, quality selection, and clean interface.</p>
+                        <h2 class="text-3xl font-bold text-cyan-300 mb-3">AI Hindi Subtitle Generator</h2>
+                        <p class="text-gray-300 mb-4">NLP tool using speech‑to‑text + translation API to auto‑generate Hindi subtitles for videos. (Coming soon)</p>
                         <div class="mb-5 flex flex-wrap">
-                            <span class="project-tag">HTML5 Video API</span>
-                            <span class="project-tag">Custom Controls</span>
-                            <span class="project-tag">JavaScript</span>
-                            <span class="project-tag">Education</span>
+                            <span class="project-tag">Python</span><span class="project-tag">NLP</span>
+                            <span class="project-tag">Speech-to-Text</span><span class="project-tag">API</span>
+                            <span class="project-tag">Coming Soon</span>
                         </div>
-                        <a href="https://vkboss49264.github.io/videosplayer/" target="_blank" class="inline-block px-5 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full text-white font-semibold hover:scale-105 transition">Live Demo →</a>
+                        <a href="https://github.com/vk698" target="_blank" class="magnetic-btn inline-block px-5 py-2 border border-cyan-400 text-cyan-400 rounded-full font-semibold hover:bg-cyan-500/10 transition hover:scale-105">GitHub →</a>
                     </div>
                 </div>
             </div>
-            
-            <!-- Job Portal -->
-            <div class="glass-card overflow-hidden tilt-card reveal">
+
+            <!-- 3. YouTube-Style Video Player -->
+            <div class="glass-card overflow-hidden tilt-card reveal stagger-item">
                 <div class="md:flex">
                     <div class="md:w-1/2 img-container">
-                        <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=600&h=400&fit=crop" alt="Job Portal" class="project-img w-full h-full object-cover">
+                        <img src="https://images.unsplash.com/photo-1594904351111-a072f80b1a71?w=600&h=400&fit=crop" alt="YouTube-Style Video Player" class="project-img w-full h-full object-cover" loading="lazy">
+                    </div>
+                    <div class="md:w-1/2 p-6 md:p-8">
+                        <h2 class="text-3xl font-bold text-cyan-300 mb-3">YouTube‑Style Video Player</h2>
+                        <p class="text-gray-300 mb-4">Custom video player with playlist support, playback controls, and responsive UI – ad‑free experience.</p>
+                        <div class="mb-5 flex flex-wrap">
+                            <span class="project-tag">HTML5 Video</span><span class="project-tag">Playlist</span>
+                            <span class="project-tag">JavaScript</span><span class="project-tag">Responsive</span>
+                        </div>
+                        <div class="flex flex-wrap gap-3">
+                            <a href="https://vkboss49264.github.io/videosplayer/" target="_blank" class="magnetic-btn inline-block px-5 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full text-white font-semibold hover:scale-105 transition">Live Demo →</a>
+                            <a href="https://github.com/vk698" target="_blank" class="magnetic-btn inline-block px-5 py-2 border border-cyan-400 text-cyan-400 rounded-full font-semibold hover:bg-cyan-500/10 transition hover:scale-105">GitHub →</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. Job Opportunities Portal -->
+            <div class="glass-card overflow-hidden tilt-card reveal stagger-item">
+                <div class="md:flex flex-row-reverse">
+                    <div class="md:w-1/2 img-container">
+                        <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=600&h=400&fit=crop" alt="Job Portal" class="project-img w-full h-full object-cover" loading="lazy">
                     </div>
                     <div class="md:w-1/2 p-6 md:p-8">
                         <h2 class="text-3xl font-bold text-cyan-300 mb-3">Job Opportunities Portal</h2>
-                        <p class="text-gray-300 mb-4">Comprehensive job portal connecting job seekers with employers. Job listings, application tracking, resume building, and personalized recommendations.</p>
+                        <p class="text-gray-300 mb-4">Full‑stack job board – employers post jobs, candidates filter & apply easily. Includes resume builder and recommendations.</p>
                         <div class="mb-5 flex flex-wrap">
-                            <span class="project-tag">Job Listings</span>
-                            <span class="project-tag">Application System</span>
-                            <span class="project-tag">User Profiles</span>
-                            <span class="project-tag">Career Resources</span>
+                            <span class="project-tag">Job Listings</span><span class="project-tag">Applications</span>
+                            <span class="project-tag">User Profiles</span><span class="project-tag">Career</span>
                         </div>
-                        <a href="https://vkboss49264.github.io/business-website/" target="_blank" class="inline-block px-5 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full text-white font-semibold hover:scale-105 transition">Live Demo →</a>
-                    </div>
-                </div>
-            </div>
-        </section>
-        
-        <!-- Other Projects (Grid) with images -->
-        <section class="max-w-5xl mx-auto mb-20 reveal">
-            <h2 class="text-3xl font-bold text-center mb-10"><span class="border-b-4 border-cyan-400 pb-2 inline-block">Other Projects</span></h2>
-            <div class="grid md:grid-cols-2 gap-8">
-                <div class="glass-card overflow-hidden tilt-card">
-                    <div class="h-48 img-container">
-                        <img src="https://images.unsplash.com/photo-1592210454359-9043ad0670aa?w=600&h=300&fit=crop" alt="Weather Dashboard" class="project-img w-full h-full object-cover">
-                    </div>
-                    <div class="p-6">
-                        <h3 class="text-xl font-bold text-cyan-300 mb-2">Weather Dashboard</h3>
-                        <p class="text-gray-400 mb-3">Responsive weather app providing current conditions and 5‑day forecasts using OpenWeather API. Features location search and unit toggling.</p>
-                        <div class="flex flex-wrap">
-                            <span class="project-tag">API Integration</span>
-                            <span class="project-tag">Responsive</span>
-                            <span class="project-tag">Local Storage</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="glass-card overflow-hidden tilt-card">
-                    <div class="h-48 img-container">
-                        <img src="https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=600&h=300&fit=crop" alt="Task Management App" class="project-img w-full h-full object-cover">
-                    </div>
-                    <div class="p-6">
-                        <h3 class="text-xl font-bold text-cyan-300 mb-2">Task Management App</h3>
-                        <p class="text-gray-400 mb-3">Productivity app with task categorization, priority levels, deadlines, and drag‑and‑drop organization.</p>
-                        <div class="flex flex-wrap">
-                            <span class="project-tag">CRUD</span>
-                            <span class="project-tag">Drag & Drop</span>
-                            <span class="project-tag">Priority System</span>
+                        <div class="flex flex-wrap gap-3">
+                            <a href="https://vkboss49264.github.io/business-website/" target="_blank" class="magnetic-btn inline-block px-5 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full text-white font-semibold hover:scale-105 transition">Live Demo →</a>
+                            <a href="https://github.com/vk698" target="_blank" class="magnetic-btn inline-block px-5 py-2 border border-cyan-400 text-cyan-400 rounded-full font-semibold hover:bg-cyan-500/10 transition hover:scale-105">GitHub →</a>
                         </div>
                     </div>
                 </div>
             </div>
+
+            <!-- 5. VK Education -->
+            <div class="glass-card overflow-hidden tilt-card reveal stagger-item">
+                <div class="md:flex">
+                    <div class="md:w-1/2 img-container">
+                        <img src="https://images.unsplash.com/photo-1501504905252-473c47e087f8?w=600&h=400&fit=crop" alt="VK Education" class="project-img w-full h-full object-cover" loading="lazy">
+                    </div>
+                    <div class="md:w-1/2 p-6 md:p-8">
+                        <h2 class="text-3xl font-bold text-cyan-300 mb-3">VK Education</h2>
+                        <p class="text-gray-300 mb-4">Educational resource hub – tutorials, study materials, coding guides for students and developers.</p>
+                        <div class="mb-5 flex flex-wrap">
+                            <span class="project-tag">Education</span><span class="project-tag">Tutorials</span>
+                            <span class="project-tag">Study Materials</span><span class="project-tag">Coding</span>
+                        </div>
+                        <div class="flex flex-wrap gap-3">
+                            <a href="https://vk698.github.io/vk-education/" target="_blank" class="magnetic-btn inline-block px-5 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full text-white font-semibold hover:scale-105 transition">Live Demo →</a>
+                            <a href="https://github.com/vk698" target="_blank" class="magnetic-btn inline-block px-5 py-2 border border-cyan-400 text-cyan-400 rounded-full font-semibold hover:bg-cyan-500/10 transition hover:scale-105">GitHub →</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 6. Blogging Website -->
+            <div class="glass-card overflow-hidden tilt-card reveal stagger-item">
+                <div class="md:flex flex-row-reverse">
+                    <div class="md:w-1/2 img-container">
+                        <img src="https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=600&h=400&fit=crop" alt="Blogging Website" class="project-img w-full h-full object-cover" loading="lazy">
+                    </div>
+                    <div class="md:w-1/2 p-6 md:p-8">
+                        <h2 class="text-3xl font-bold text-cyan-300 mb-3">Blogging Website</h2>
+                        <p class="text-gray-300 mb-4">Clean, minimal tech blog for publishing articles, tutorials, and personal insights on development.</p>
+                        <div class="mb-5 flex flex-wrap">
+                            <span class="project-tag">Blog</span><span class="project-tag">Content</span>
+                            <span class="project-tag">Responsive</span><span class="project-tag">Tech</span>
+                        </div>
+                        <div class="flex flex-wrap gap-3">
+                            <a href="https://vk698.github.io/Bloging-website/" target="_blank" class="magnetic-btn inline-block px-5 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full text-white font-semibold hover:scale-105 transition">Live Demo →</a>
+                            <a href="https://github.com/vk698" target="_blank" class="magnetic-btn inline-block px-5 py-2 border border-cyan-400 text-cyan-400 rounded-full font-semibold hover:bg-cyan-500/10 transition hover:scale-105">GitHub →</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 7. 3D Interactive Portfolio -->
+            <div class="glass-card overflow-hidden tilt-card reveal stagger-item">
+                <div class="md:flex">
+                    <div class="md:w-1/2 img-container">
+                        <img src="https://images.unsplash.com/photo-1558655146-9f40138edfeb?w=600&h=400&fit=crop" alt="3D Interactive Portfolio" class="project-img w-full h-full object-cover" loading="lazy">
+                    </div>
+                    <div class="md:w-1/2 p-6 md:p-8">
+                        <h2 class="text-3xl font-bold text-cyan-300 mb-3">3D Interactive Portfolio</h2>
+                        <p class="text-gray-300 mb-4">Immersive 3D portfolio with dynamic animations, constellation background, glass cube, and interactive elements built with Three.js.</p>
+                        <div class="mb-5 flex flex-wrap">
+                            <span class="project-tag">Three.js</span><span class="project-tag">3D</span>
+                            <span class="project-tag">Interactive</span><span class="project-tag">Portfolio</span>
+                        </div>
+                        <div class="flex flex-wrap gap-3">
+                            <a href="https://vk698.github.io/vishalkumar/" target="_blank" class="magnetic-btn inline-block px-5 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full text-white font-semibold hover:scale-105 transition">Live Demo →</a>
+                            <a href="https://github.com/vk698" target="_blank" class="magnetic-btn inline-block px-5 py-2 border border-cyan-400 text-cyan-400 rounded-full font-semibold hover:bg-cyan-500/10 transition hover:scale-105">GitHub →</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 8. E-commerce (Aether Frontend) -->
+            <div class="glass-card overflow-hidden tilt-card reveal stagger-item">
+                <div class="md:flex flex-row-reverse">
+                    <div class="md:w-1/2 img-container">
+                        <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=600&h=400&fit=crop" alt="E-commerce" class="project-img w-full h-full object-cover" loading="lazy">
+                    </div>
+                    <div class="md:w-1/2 p-6 md:p-8">
+                        <h2 class="text-3xl font-bold text-cyan-300 mb-3">E‑commerce (Aether Frontend)</h2>
+                        <p class="text-gray-300 mb-4">Modern e‑commerce frontend with product listings, cart, checkout, and responsive design – built with React and Tailwind.</p>
+                        <div class="mb-5 flex flex-wrap">
+                            <span class="project-tag">React</span><span class="project-tag">Tailwind</span>
+                            <span class="project-tag">E‑commerce</span><span class="project-tag">Responsive</span>
+                        </div>
+                        <a href="https://aether-frontend-nine.vercel.app/" target="_blank" class="magnetic-btn inline-block px-5 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full text-white font-semibold hover:scale-105 transition">Live Demo →</a>
+                    </div>
+                </div>
+            </div>
+
         </section>
-        
+
         <!-- Call to Action -->
         <section class="text-center mb-16 reveal">
             <div class="glass-card p-8 max-w-2xl mx-auto">
                 <h2 class="text-2xl font-bold mb-3">Have a project in mind?</h2>
-                <a href="contact.html" class="inline-block mt-2 px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full font-bold text-white shadow-lg hover:shadow-cyan-500/50 transition hover:scale-105">Let's Discuss →</a>
+                <a href="contact.html" class="magnetic-btn inline-block mt-2 px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full font-bold text-white shadow-lg hover:shadow-cyan-500/50 transition hover:scale-105" data-page="contact">Let's Discuss →</a>
             </div>
         </section>
     </main>
-    
+
     <footer class="bg-black/30 backdrop-blur-md border-t border-white/10 py-8 mt-8">
         <div class="container mx-auto px-4 text-center text-gray-500">
             <p>&copy; <span id="year"></span> Vishal Kumar — All dimensions reserved.</p>
         </div>
     </footer>
-    
+
     <audio id="bgMusic" loop><source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg"></audio>
-    
+
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.170.0/build/three.module.js"
+            }
+        }
+    </script>
+
     <script type="module">
         import * as THREE from 'three';
-        
-        // --- Three.js Background (identical) ---
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.z = 30;
-        const renderer = new THREE.WebGLRenderer({ alpha: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setClearColor(0x000000, 0);
-        document.getElementById('threeCanvas').appendChild(renderer.domElement);
-        
-        const particlesGeo = new THREE.BufferGeometry();
-        const positions = new Float32Array(1500 * 3);
-        for (let i = 0; i < 1500; i++) {
-            positions[i*3] = (Math.random() - 0.5) * 100;
-            positions[i*3+1] = (Math.random() - 0.5) * 60;
-            positions[i*3+2] = (Math.random() - 0.5) * 80 - 40;
-        }
-        particlesGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-        const particles = new THREE.Points(particlesGeo, new THREE.PointsMaterial({ color: 0x06b6d4, size: 0.2, transparent: true }));
-        scene.add(particles);
-        
-        const knotGeo = new THREE.TorusKnotGeometry(2, 0.5, 100, 16);
-        const knot = new THREE.Mesh(knotGeo, new THREE.MeshStandardMaterial({ color: 0xa855f7, emissive: 0x06b6d4, emissiveIntensity: 0.3 }));
-        scene.add(knot);
-        
-        scene.add(new THREE.AmbientLight(0x404060));
-        const light = new THREE.DirectionalLight(0xffffff, 1);
-        light.position.set(5,10,7);
-        scene.add(light);
-        
-        function animate() {
-            requestAnimationFrame(animate);
-            knot.rotation.x += 0.005;
-            knot.rotation.y += 0.01;
-            knot.rotation.z += 0.007;
-            particles.rotation.y += 0.0005;
-            renderer.render(scene, camera);
-        }
-        animate();
-        
-        // --- Mouse Orb ---
+
+        // ---------- 3D Background (Constellation + Portal + FAST Color Morph) ----------
+        try {
+            const canvas = document.getElementById('threeCanvas');
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+            camera.position.set(0,0,30);
+            const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setClearColor(0x000000, 0);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+            canvas.appendChild(renderer.domElement);
+
+            // Colors for morph
+            const colors = [
+                new THREE.Color(0x06b6d4),
+                new THREE.Color(0xa855f7),
+                new THREE.Color(0xec4899),
+                new THREE.Color(0x3b82f6)
+            ];
+
+            function getColor(t) {
+                const seg = 1/(colors.length-1);
+                const idx = Math.min(Math.floor(t/seg), colors.length-2);
+                const frac = (t - idx*seg)/seg;
+                return colors[idx].clone().lerp(colors[idx+1]||colors[0], frac);
+            }
+
+            // Constellation
+            const starCount = 800;
+            const pos = new Float32Array(starCount*3);
+            for (let i=0; i<starCount; i++) {
+                pos[i*3] = (Math.random()-0.5)*100;
+                pos[i*3+1] = (Math.random()-0.5)*60;
+                pos[i*3+2] = (Math.random()-0.5)*80 - 20;
+            }
+            const starGeo = new THREE.BufferGeometry();
+            starGeo.setAttribute('position', new THREE.BufferAttribute(pos,3));
+            const starMat = new THREE.PointsMaterial({
+                color:0x06b6d4, size:0.3, transparent:true, opacity:0.8,
+                blending:THREE.AdditiveBlending, sizeAttenuation:true
+            });
+            const starField = new THREE.Points(starGeo, starMat);
+            scene.add(starField);
+
+            // Lines
+            const linePos = [];
+            const arr = starGeo.attributes.position.array;
+            for (let i=0; i<starCount; i++) {
+                for (let j=i+1; j<starCount; j++) {
+                    const dx = arr[i*3]-arr[j*3], dy = arr[i*3+1]-arr[j*3+1], dz = arr[i*3+2]-arr[j*3+2];
+                    if (Math.sqrt(dx*dx+dy*dy+dz*dz) < 6) {
+                        linePos.push(arr[i*3], arr[i*3+1], arr[i*3+2]);
+                        linePos.push(arr[j*3], arr[j*3+1], arr[j*3+2]);
+                    }
+                }
+            }
+            const lineGeo = new THREE.BufferGeometry();
+            lineGeo.setAttribute('position', new THREE.Float32BufferAttribute(linePos,3));
+            const lineMat = new THREE.LineBasicMaterial({
+                color:0x06b6d4, transparent:true, opacity:0.25,
+                blending:THREE.AdditiveBlending
+            });
+            const lines = new THREE.LineSegments(lineGeo, lineMat);
+            scene.add(lines);
+
+            // Portal
+            const portalGroup = new THREE.Group();
+            portalGroup.position.set(0,0,-8);
+            const glowCanvas = document.createElement('canvas');
+            glowCanvas.width=128; glowCanvas.height=128;
+            const ctx = glowCanvas.getContext('2d');
+            const grad = ctx.createRadialGradient(64,64,0,64,64,64);
+            grad.addColorStop(0,'rgba(6,182,212,1)');
+            grad.addColorStop(0.4,'rgba(168,85,247,0.8)');
+            grad.addColorStop(1,'rgba(0,0,0,0)');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0,0,128,128);
+            const glowTex = new THREE.CanvasTexture(glowCanvas);
+            const glowMat = new THREE.SpriteMaterial({
+                map:glowTex, blending:THREE.AdditiveBlending,
+                transparent:true, opacity:0.6
+            });
+            const glowSprite = new THREE.Sprite(glowMat);
+            glowSprite.scale.set(12,12,1);
+            portalGroup.add(glowSprite);
+            const rings = [];
+            for (let i=0; i<3; i++) {
+                const radius = 2.5 + i*1.2;
+                const geo = new THREE.TorusGeometry(radius, 0.04, 32, 64);
+                const mat = new THREE.MeshStandardMaterial({
+                    color: i%2===0 ? 0x06b6d4 : 0xa855f7,
+                    emissive: i%2===0 ? 0x06b6d4 : 0xa855f7,
+                    emissiveIntensity: 0.4 + i*0.1,
+                    transparent: true, opacity: 0.4 + i*0.1,
+                    side: THREE.DoubleSide, blending: THREE.AdditiveBlending
+                });
+                const mesh = new THREE.Mesh(geo, mat);
+                mesh.rotation.x = Math.PI/2;
+                mesh.rotation.z = (i/3)*Math.PI*2;
+                portalGroup.add(mesh);
+                rings.push(mesh);
+            }
+            scene.add(portalGroup);
+
+            // Mouse interaction
+            let mouseX = 0, mouseY = 0;
+            document.addEventListener('mousemove', (e) => {
+                mouseX = (e.clientX/window.innerWidth)*2 - 1;
+                mouseY = -(e.clientY/window.innerHeight)*2 + 1;
+            });
+
+            // FAST COLOR MORPH (scroll + time based)
+            let scrollProgress = 0;
+            window.addEventListener('scroll', () => {
+                const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+                scrollProgress = maxScroll > 0 ? (window.scrollY / maxScroll) * 3 : 0;
+            });
+
+            let timeOffset = 0;
+
+            function animateMain() {
+                requestAnimationFrame(animateMain);
+
+                timeOffset += 0.003;
+                const colorT = (scrollProgress + timeOffset) % 1;
+                const color = getColor(colorT);
+
+                starMat.color.copy(color);
+                lineMat.color.copy(color);
+
+                starField.rotation.y += 0.0003;
+                lines.rotation.y += 0.0003;
+
+                rings.forEach((ring, idx) => {
+                    ring.rotation.z += 0.005*(idx+1);
+                    ring.rotation.x += 0.003*(idx+1);
+                    const ringColor = getColor((colorT + idx*0.1) % 1);
+                    ring.material.color.copy(ringColor);
+                    ring.material.emissive.copy(ringColor);
+                });
+                glowSprite.material.rotation += 0.001;
+
+                starField.rotation.y += (mouseX*0.02 - starField.rotation.y)*0.01;
+                starField.rotation.x += (mouseY*0.01 - starField.rotation.x)*0.01;
+                lines.rotation.y = starField.rotation.y;
+                lines.rotation.x = starField.rotation.x;
+
+                renderer.render(scene, camera);
+            }
+            animateMain();
+
+            window.addEventListener('resize', () => {
+                renderer.setSize(window.innerWidth, window.innerHeight);
+                camera.aspect = window.innerWidth/window.innerHeight;
+                camera.updateProjectionMatrix();
+            });
+
+        } catch(e) { console.warn('3D init error:', e); }
+
+        // ---------- NON-3D FEATURES ----------
+
+        // Mouse Orb
         const orb = document.getElementById('mouseOrb');
         document.addEventListener('mousemove', (e) => {
             orb.style.left = e.clientX - 30 + 'px';
             orb.style.top = e.clientY - 30 + 'px';
         });
-        
-        // --- Scroll Reveal ---
+
+        // Magnetic Buttons
+        document.querySelectorAll('.magnetic-btn').forEach(btn => {
+            btn.addEventListener('mousemove', (e) => {
+                const rect = btn.getBoundingClientRect();
+                const x = (e.clientX - rect.left) / rect.width - 0.5;
+                const y = (e.clientY - rect.top) / rect.height - 0.5;
+                btn.style.transform = `translate(${x * 12}px, ${y * 6}px) scale(1.05)`;
+            });
+            btn.addEventListener('mouseleave', () => {
+                btn.style.transform = 'translate(0,0) scale(1)';
+            });
+        });
+
+        // Scroll Reveal (normal)
         const reveals = document.querySelectorAll('.reveal');
         const revealObserver = new IntersectionObserver((entries) => {
             entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('active'); });
         }, { threshold: 0.15 });
         reveals.forEach(r => revealObserver.observe(r));
-        
-        // --- Dark/Light Mode ---
+
+        // Stagger items
+        const staggerItems = document.querySelectorAll('.stagger-item');
+        const staggerObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    const delay = (Array.from(staggerItems).indexOf(entry.target) * 150) % 1000;
+                    entry.target.style.transitionDelay = `${delay}ms`;
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { threshold: 0.2 });
+        staggerItems.forEach(item => staggerObserver.observe(item));
+
+        // Dark/Light Mode
         const themeToggle = document.getElementById('themeToggle');
         themeToggle.addEventListener('click', () => {
             document.body.classList.toggle('dark');
@@ -363,8 +756,8 @@
             if(document.body.classList.contains('dark')) icon.classList.replace('fa-sun', 'fa-moon');
             else icon.classList.replace('fa-moon', 'fa-sun');
         });
-        
-        // --- Music Toggle ---
+
+        // Music Toggle
         const music = document.getElementById('bgMusic');
         music.volume = 0.2;
         let musicPlaying = false;
@@ -372,8 +765,8 @@
             musicPlaying ? music.pause() : music.play();
             musicPlaying = !musicPlaying;
         });
-        
-        // --- Chatbot (same) ---
+
+        // Chatbot
         const chatIcon = document.getElementById('chatIcon');
         const chatBox = document.getElementById('chatBox');
         const chatMessages = document.getElementById('chatMessages');
@@ -388,10 +781,10 @@
         }
         function botReply(query) {
             query = query.toLowerCase();
-            if(query.includes('project')) addMessage("I've built Free Fire tournament platform, video player, job portal, and more. Check them out!", false);
-            else if(query.includes('tournament')) addMessage("The Free Fire tournament platform has live demos – click 'Live Demo' on the project card.", false);
-            else if(query.includes('video')) addMessage("Student Video Player is ad‑free and perfect for learning. Try the demo!", false);
-            else addMessage("Feel free to browse my projects and contact me if you have any questions!", false);
+            if(query.includes('project')) addMessage("I've built Free Fire tournament, AI subtitle generator, video player, job portal, education hub, blog, portfolio, and e‑commerce!", false);
+            else if(query.includes('tournament')) addMessage("Free Fire tournament platform has live demo – check it out!", false);
+            else if(query.includes('video')) addMessage("YouTube-Style Video Player with playlist support – try the demo!", false);
+            else addMessage("Explore all my projects above and contact me if you have questions!", false);
         }
         chatIcon.addEventListener('click', () => chatBox.classList.toggle('hidden'));
         sendBtn.addEventListener('click', () => {
@@ -399,18 +792,29 @@
             if(msg) { addMessage(msg, true); botReply(msg); chatInput.value = ''; }
         });
         chatInput.addEventListener('keypress', (e) => { if(e.key === 'Enter') sendBtn.click(); });
-        
-        // --- Admin Panel ---
+
+        // Admin Panel
         let visitCount = localStorage.getItem('visitCount') || 0;
         visitCount = parseInt(visitCount)+1;
         localStorage.setItem('visitCount', visitCount);
         document.getElementById('visitCount').innerText = visitCount;
-        document.getElementById('resetStats').addEventListener('click', () => { localStorage.setItem('visitCount', 0); location.reload(); });
-        document.body.addEventListener('dblclick', () => document.getElementById('adminPanel').classList.toggle('show'));
-        
-        // --- Cursor Trails ---
-        const trailCount = 10; let trails = [];
-        for(let i=0;i<trailCount;i++) { let trail = document.createElement('div'); trail.className = 'trail'; document.body.appendChild(trail); trails.push(trail); }
+        document.getElementById('resetStats').addEventListener('click', () => {
+            localStorage.setItem('visitCount', '0');
+            location.reload();
+        });
+        document.body.addEventListener('dblclick', () => {
+            document.getElementById('adminPanel').classList.toggle('show');
+        });
+
+        // Cursor Trails
+        const trailCount = 10;
+        let trails = [];
+        for(let i=0;i<trailCount;i++) {
+            let trail = document.createElement('div');
+            trail.className = 'trail';
+            document.body.appendChild(trail);
+            trails.push(trail);
+        }
         let trailIndex = 0;
         document.addEventListener('mousemove', (e) => {
             let trail = trails[trailIndex];
@@ -420,25 +824,46 @@
             setTimeout(() => trail.style.opacity = '0', 200);
             trailIndex = (trailIndex+1) % trailCount;
         });
-        
-        // --- Progress Bar ---
+
+        // Progress Bar
         window.addEventListener('scroll', () => {
             const winScroll = document.documentElement.scrollTop;
             const height = document.documentElement.scrollHeight - window.innerHeight;
             const scrolled = (winScroll / height) * 100;
             document.getElementById('progress-bar').style.width = scrolled + '%';
         });
-        
-        // --- Mobile Menu ---
+
+        // Mobile Menu
         document.getElementById('mobile-menu-button').addEventListener('click', () => {
             document.getElementById('mobile-menu').classList.toggle('hidden');
         });
-        
-        // --- Year & Loader ---
+
+        // Year
         document.getElementById('year').innerText = new Date().getFullYear();
-        window.addEventListener('load', () => { document.getElementById('loader').style.display = 'none'; });
-        
-        console.log("Projects page with images loaded!");
+
+        // Loader
+        window.addEventListener('load', () => {
+            document.getElementById('loader').style.display = 'none';
+        });
+
+        // ---------- PAGE TRANSITION (fix) ----------
+        const overlay = document.getElementById('transitionOverlay');
+        let transitioning = false;
+
+        document.querySelectorAll('[data-page]').forEach(link => {
+            link.addEventListener('click', (e) => {
+                const href = link.getAttribute('href');
+                if (!href || href === '#' || href === window.location.pathname || transitioning) return;
+                e.preventDefault();
+                transitioning = true;
+                overlay.classList.add('active');
+                setTimeout(() => {
+                    window.location.href = href;
+                }, 900);
+            });
+        });
+
+        console.log("🔥 Projects page loaded with all animations + correct links + page transition!");
     </script>
 </body>
 </html>

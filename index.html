@@ -10,73 +10,101 @@
     <meta name="keywords" content="Vishal Kumar, VK18, 3D Portfolio, Web Developer, Three.js">
     <meta name="author" content="Vishal Kumar">
     
+    <!-- Google Fonts (Inter) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- jsPDF for professional PDF generation -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    
-    <!-- Three.js Core -->
+    <!-- Three.js (updated to latest stable) -->
     <script type="importmap">
         {
             "imports": {
-                "three": "https://unpkg.com/three@0.128.0/build/three.module.js"
+                "three": "https://unpkg.com/three@0.170.0/build/three.module.js"
             }
         }
     </script>
     
     <style>
         /* ---------- Global Reset & Transitions ---------- */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            transition: background-color 0.3s ease, color 0.3s ease;
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            font-family: 'Inter', sans-serif;
             overflow-x: hidden;
+            transition: background 0.5s ease;
         }
-        
+        /* ---------- Morphing Background Gradient (Effect 4) ---------- */
         body.dark {
-            background: radial-gradient(circle at 10% 20%, #0a0f1e, #03050b);
+            background: linear-gradient(-45deg, #0a0f1e, #1a1a2e, #16213e, #0a0f1e);
+            background-size: 400% 400%;
+            animation: morphGradient 20s ease infinite;
             color: #e2e8f0;
         }
-        
         body.light {
-            background: radial-gradient(circle at 10% 20%, #f0f9ff, #e0f2fe);
+            background: linear-gradient(-45deg, #f0f9ff, #e0f2fe, #f0f9ff, #e0f2fe);
+            background-size: 400% 400%;
+            animation: morphGradient 20s ease infinite;
             color: #0f172a;
         }
-        
-        body.dark ::-webkit-scrollbar {
-            width: 8px;
-        }
-        body.dark ::-webkit-scrollbar-track {
-            background: #0f172a;
-        }
-        body.dark ::-webkit-scrollbar-thumb {
-            background: #06b6d4;
-            border-radius: 10px;
+        @keyframes morphGradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
         
+        body.dark ::-webkit-scrollbar { width: 8px; }
+        body.dark ::-webkit-scrollbar-track { background: #0f172a; }
+        body.dark ::-webkit-scrollbar-thumb { background: #06b6d4; border-radius: 10px; }
+        
+        /* ---------- Glass Card (existing) ---------- */
         .glass-card {
             background: rgba(15, 25, 45, 0.55);
             backdrop-filter: blur(12px);
-            border: 1px solid rgba(6, 182, 212, 0.25);
+            border: 2px solid rgba(6, 182, 212, 0.25);
             border-radius: 1.5rem;
             transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
-        
         body.light .glass-card {
             background: rgba(255, 255, 255, 0.7);
             border-color: rgba(6, 182, 212, 0.4);
             box-shadow: 0 8px 20px rgba(0,0,0,0.05);
         }
         
+        /* ---------- Animated Gradient Border on Cards (Effect 2) ---------- */
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: 1.5rem;
+            padding: 2px;
+            background: conic-gradient(from 0deg, #06b6d4, #a855f7, #ec4899, #3b82f6, #06b6d4);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            animation: rotateBorder 6s linear infinite;
+            opacity: 0;
+            transition: opacity 0.4s;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .glass-card:hover::before {
+            opacity: 1;
+        }
+        @keyframes rotateBorder {
+            to { transform: rotate(360deg); }
+        }
+        /* Ensure content stays above pseudo */
+        .glass-card > * {
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* ---------- Tilt Card (existing) ---------- */
         .tilt-card {
             transition: all 0.3s cubic-bezier(0.03, 0.98, 0.52, 0.99);
             transform-style: preserve-3d;
@@ -86,6 +114,7 @@
             box-shadow: 0 25px 40px -12px rgba(6, 182, 212, 0.3);
         }
         
+        /* ---------- Reveal (existing, modified for stagger) ---------- */
         .reveal {
             opacity: 0;
             transform: translateY(40px);
@@ -95,17 +124,24 @@
             opacity: 1;
             transform: translateY(0);
         }
-        
-        .pulse-ring {
-            position: relative;
+        /* ---------- Staggered Scroll Reveal (Effect 3) ---------- */
+        .stagger-item {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s cubic-bezier(0.2, 0.9, 0.4, 1.1);
         }
+        .stagger-item.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        /* Different delays for each child (will be applied via JS) */
+        
+        /* ---------- Pulse Ring (existing) ---------- */
+        .pulse-ring { position: relative; }
         .pulse-ring::before {
             content: '';
             position: absolute;
-            top: -8px;
-            left: -8px;
-            right: -8px;
-            bottom: -8px;
+            inset: -8px;
             border-radius: 50%;
             background: rgba(6, 182, 212, 0.4);
             z-index: -1;
@@ -117,68 +153,27 @@
             100% { transform: scale(0.9); opacity: 0; }
         }
         
+        /* ---------- Typing Cursor ---------- */
         .typed-cursor {
             font-size: inherit;
             opacity: 1;
             animation: blink 0.7s infinite;
         }
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0; }
-        }
+        @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0;} }
         
-        .float-icon {
-            animation: floatIcon 3s ease-in-out infinite;
-        }
-        @keyframes floatIcon {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-8px); }
-        }
+        .float-icon { animation: floatIcon 3s ease-in-out infinite; }
+        @keyframes floatIcon { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-8px);} }
         
-        .carousel-3d {
-            perspective: 1200px;
-        }
+        .carousel-3d { perspective: 1200px; }
         
-        .chat-widget {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 1000;
-        }
-        .chat-box {
-            width: 280px;
-            border-radius: 20px;
-            transition: all 0.3s;
-        }
-        
-        .admin-panel {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            z-index: 999;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s;
-        }
-        .admin-panel.show {
-            opacity: 1;
-            pointer-events: auto;
-        }
-        
-        .parallax-layer {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: -1;
-        }
-        
+        /* ---------- Chat, Admin, etc. (existing) ---------- */
+        .chat-widget { position: fixed; bottom: 20px; right: 20px; z-index: 1000; }
+        .chat-box { width: 280px; border-radius: 20px; transition: all 0.3s; }
+        .admin-panel { position: fixed; bottom: 20px; left: 20px; z-index: 999; opacity: 0; pointer-events: none; transition: 0.3s; }
+        .admin-panel.show { opacity: 1; pointer-events: auto; }
+        .parallax-layer { position: fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:-1; }
         .music-toggle, .theme-toggle {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
             z-index: 1001;
             background: rgba(0,0,0,0.6);
             border-radius: 50%;
@@ -190,27 +185,24 @@
             cursor: pointer;
             backdrop-filter: blur(8px);
         }
-        .theme-toggle {
-            top: 20px;
-            bottom: auto;
-        }
+        .theme-toggle { top: 20px; right: 20px; }
+        .music-toggle { bottom: 20px; right: 20px; }
         
-        .counter {
-            font-size: 2.5rem;
-            font-weight: bold;
-        }
+        .counter { font-size: 2.5rem; font-weight: bold; }
+        @media (max-width:768px){ .counter { font-size:1.8rem; } }
         
-        @media (max-width: 768px) {
-            .counter { font-size: 1.8rem; }
-        }
-
-        .animate-spin-slow {
-            animation: spinSlow 12s linear infinite;
-        }
-        @keyframes spinSlow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .animate-spin-slow { animation: spinSlow 12s linear infinite; }
+        @keyframes spinSlow { to { transform:rotate(360deg); } }
         
         .nav-link { position: relative; }
-        .nav-link::after { content: ''; position: absolute; width:0; height:2px; bottom:-4px; left:0; background: linear-gradient(90deg,#06b6d4,#a855f7); transition: width 0.3s; }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width:0; height:2px;
+            bottom:-4px; left:0;
+            background: linear-gradient(90deg,#06b6d4,#a855f7);
+            transition:0.3s;
+        }
         .nav-link:hover::after { width:100%; }
         
         body.light .glass-card { background: rgba(255,255,255,0.7); color:#1e293b; }
@@ -218,82 +210,185 @@
         body.light .bg-black\/40 { background: rgba(255,255,255,0.8); }
         body.light .nav-link { color: #0f172a; }
         
-        .img-fallback {
-            background: linear-gradient(135deg, #06b6d4, #a855f7);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 2rem;
-            color: white;
+        .img-fallback { background:linear-gradient(135deg,#06b6d4,#a855f7); display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:2rem; color:white; width:100%; height:100%; }
+        
+        /* ---------- Project Image (Ken Burns Effect - Effect 7) ---------- */
+        .home-img-container {
+            overflow: hidden;
+            height: 100%;
+            min-height: 200px;
+        }
+        .home-project-img {
             width: 100%;
             height: 100%;
+            object-fit: cover;
+            transition: transform 6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            transform: scale(1);
+        }
+        .tilt-card:hover .home-project-img {
+            transform: scale(1.08) translateX(3px);
+        }
+        
+        /* ---------- Flip Counter (existing) ---------- */
+        .flip-card { perspective: 800px; display: inline-block; }
+        .flip-card-inner { transition: 0.6s cubic-bezier(0.4,0,0.2,1); transform-style:preserve-3d; position:relative; }
+        .flip-card-front, .flip-card-back { backface-visibility:hidden; position:absolute; inset:0; display:flex; align-items:center; justify-content:center; }
+        .flip-card-back { transform:rotateX(180deg); color:#06b6d4; }
+        .flip-card.flipped .flip-card-inner { transform:rotateX(180deg); }
+        
+        .visitor-badge { background:rgba(6,182,212,0.15); border:1px solid rgba(6,182,212,0.3); padding:8px 16px; border-radius:9999px; display:inline-block; backdrop-filter:blur(4px); }
+        
+        /* ---------- Holographic Card (existing) ---------- */
+        .holographic-card {
+            transition: all 0.4s cubic-bezier(0.2,0.9,0.4,1.1) !important;
+            position: relative;
+            overflow: hidden;
+        }
+        .holographic-card::before {
+            content: '';
+            position: absolute;
+            inset: -50%;
+            width:200%; height:200%;
+            background: conic-gradient(from 0deg, transparent, rgba(6,182,212,0.15), transparent, rgba(168,85,247,0.15), transparent);
+            animation: holographicSpin 6s linear infinite;
+            opacity:0;
+            transition:0.4s;
+            pointer-events:none;
+            z-index:1;
+        }
+        .holographic-card:hover::before { opacity:1; }
+        .holographic-card:hover {
+            transform: rotateX(2deg) rotateY(4deg) translateY(-12px) scale(1.02) !important;
+            box-shadow: 0 30px 60px -15px rgba(6,182,212,0.6), 0 0 40px rgba(168,85,247,0.3) !important;
+            border-color: rgba(6,182,212,0.8) !important;
+        }
+        .holographic-card .card-content { position:relative; z-index:2; }
+        @keyframes holographicSpin { to { transform:rotate(360deg); } }
+        
+        /* ---------- Page Transition Overlay (existing) ---------- */
+        #transitionOverlay {
+            position:fixed; inset:0; z-index:99999; pointer-events:none; opacity:0; transition:0.8s;
+            display:flex; align-items:center; justify-content:center;
+            background:radial-gradient(circle,#06b6d4,#0a0f1e 70%);
+        }
+        #transitionOverlay.active { opacity:1; pointer-events:auto; }
+        #transitionOverlay .portal-ring {
+            width:0; height:0; border-radius:50%;
+            border:4px solid rgba(168,85,247,0.8);
+            box-shadow:0 0 60px rgba(6,182,212,0.8), inset 0 0 60px rgba(168,85,247,0.4);
+            transition:1s cubic-bezier(0.2,0.9,0.4,1.1);
+        }
+        #transitionOverlay.active .portal-ring { width:200vmax; height:200vmax; }
+        
+        /* ---------- MAGNETIC HOVER (Effect 1) ---------- */
+        .magnetic-btn {
+            transition: transform 0.2s cubic-bezier(0.03, 0.98, 0.52, 0.99);
+            will-change: transform;
+        }
+        
+        /* ---------- NEON GLOW ON ICONS (Effect 6) ---------- */
+        .neon-icon {
+            transition: all 0.3s ease;
+        }
+        .neon-icon:hover {
+            color: #06b6d4 !important;
+            text-shadow: 0 0 10px rgba(6,182,212,0.8), 0 0 20px rgba(6,182,212,0.5), 0 0 40px rgba(168,85,247,0.4);
+            animation: neonPulse 1.5s ease-in-out infinite;
+        }
+        @keyframes neonPulse {
+            0%,100% { text-shadow: 0 0 10px rgba(6,182,212,0.8), 0 0 20px rgba(6,182,212,0.5), 0 0 40px rgba(168,85,247,0.4); }
+            50% { text-shadow: 0 0 20px rgba(6,182,212,1), 0 0 40px rgba(6,182,212,0.8), 0 0 80px rgba(168,85,247,0.6); }
+        }
+        
+        /* ---------- SHIMMERING TEXT (Bonus) ---------- */
+        .shimmer-text {
+            display: inline-block;
+            background: linear-gradient(120deg, #06b6d4 0%, #a855f7 25%, #ec4899 50%, #06b6d4 75%, #a855f7 100%);
+            background-size: 300% 100%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shimmerMove 4s linear infinite;
+        }
+        @keyframes shimmerMove {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 300% 50%; }
+        }
+        
+        /* ---------- MOUSE-RESPONSIVE 3D TEXT (Effect 5) ---------- */
+        .tilt-text {
+            transition: transform 0.1s ease-out;
+            display: inline-block;
+            will-change: transform;
+        }
+        
+        /* ---------- 3D Canvas ---------- */
+        #threeCanvas {
+            position: fixed;
+            top:0; left:0;
+            width:100%; height:100%;
+            z-index:-2;
+            pointer-events: none;
+        }
+        
+        /* Responsive tweaks */
+        @media (max-width: 768px) {
+            .counter { font-size: 1.8rem; }
         }
     </style>
 </head>
 <body class="dark overflow-x-hidden">
-    <!-- Fixed UI Elements -->
-    <div class="theme-toggle" id="themeToggle">
-        <i class="fas fa-moon text-cyan-300 text-xl"></i>
-    </div>
-    <div class="music-toggle" id="musicToggle">
-        <i class="fas fa-music text-cyan-300 text-xl"></i>
-    </div>
-    
-    <!-- Hidden Admin Panel (double-click anywhere to toggle) -->
+    <!-- Transition Overlay -->
+    <div id="transitionOverlay"><div class="portal-ring"></div></div>
+
+    <!-- Theme & Music Toggles -->
+    <div class="theme-toggle" id="themeToggle"><i class="fas fa-moon text-cyan-300 text-xl"></i></div>
+    <div class="music-toggle" id="musicToggle"><i class="fas fa-music text-cyan-300 text-xl"></i></div>
+
+    <!-- Admin Panel -->
     <div id="adminPanel" class="admin-panel glass-card p-4 w-64">
-        <h3 class="text-cyan-400 font-bold">🔐 Admin Access</h3>
-        <p class="text-sm">Total visits: <span id="visitCount">0</span></p>
-        <button id="resetStats" class="mt-2 bg-cyan-500 px-3 py-1 rounded text-xs">Reset Stats</button>
-        <p class="text-xs mt-2 italic">Double-click anywhere to close</p>
+        <h3 class="text-cyan-400 font-bold">🔐 Admin</h3>
+        <p>Visits: <span id="visitCount">0</span></p>
+        <button id="resetStats" class="mt-2 bg-cyan-500 px-3 py-1 rounded text-xs">Reset</button>
+        <p class="text-xs mt-2 italic">Double‑click to close</p>
     </div>
-    
-    <!-- Chatbot Widget -->
+
+    <!-- Chatbot -->
     <div class="chat-widget">
-        <div id="chatIcon" class="bg-cyan-500 rounded-full w-12 h-12 flex items-center justify-center cursor-pointer shadow-lg">
-            <i class="fas fa-robot text-white text-xl"></i>
-        </div>
+        <div id="chatIcon" class="bg-cyan-500 rounded-full w-12 h-12 flex items-center justify-center cursor-pointer shadow-lg"><i class="fas fa-robot text-white text-xl"></i></div>
         <div id="chatBox" class="chat-box glass-card p-3 hidden mt-2">
             <div id="chatMessages" class="h-48 overflow-y-auto text-sm space-y-2 mb-2"></div>
-            <div class="flex gap-2">
-                <input type="text" id="chatInput" placeholder="Ask me..." class="flex-1 bg-black/30 rounded px-2 py-1 text-sm">
-                <button id="sendChat" class="bg-cyan-500 px-2 rounded text-white">Send</button>
-            </div>
+            <div class="flex gap-2"><input type="text" id="chatInput" placeholder="Ask me..." class="flex-1 bg-black/30 rounded px-2 py-1 text-sm"><button id="sendChat" class="bg-cyan-500 px-2 rounded text-white">Send</button></div>
             <p class="text-xs text-gray-400 mt-1">Try: projects, skills, contact</p>
         </div>
     </div>
-    
-    <!-- Parallax background -->
+
+    <!-- 3D Canvas & Parallax -->
     <div class="parallax-layer" id="parallaxLayer"></div>
-    
-    <!-- 3D Canvas for particles + rotating shapes -->
-    <div id="threeCanvas" style="position: fixed; top:0; left:0; width:100%; height:100%; z-index:-2; pointer-events: none;"></div>
-    
-    <!-- Mouse follower orb -->
+    <div id="threeCanvas"></div>
     <div id="mouseOrb" style="position: fixed; width: 60px; height: 60px; border-radius: 50%; background: radial-gradient(circle, rgba(6,182,212,0.6), rgba(168,85,247,0.3)); filter: blur(8px); pointer-events: none; z-index: 9999; transition: transform 0.05s linear; mix-blend-mode: screen;"></div>
-    
-    <!-- Navigation with correct paths -->
+
+    <!-- Navigation -->
     <nav class="sticky top-0 z-50 bg-black/40 backdrop-blur-xl border-b border-white/10 shadow-2xl">
         <div class="container mx-auto px-4 py-3 flex justify-between items-center">
             <a href="index.html" class="text-3xl font-extrabold bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">VK18</a>
             <div class="hidden md:flex space-x-8">
-                <a href="index.html" class="nav-link text-gray-200 hover:text-cyan-300 transition">Home</a>
-                <a href="about.html" class="nav-link text-gray-200 hover:text-cyan-300 transition">About</a>
-                <a href="projects.html" class="nav-link text-gray-200 hover:text-cyan-300 transition">Projects</a>
-                <a href="contact.html" class="nav-link text-gray-200 hover:text-cyan-300 transition">Contact</a>
+                <a href="index.html" class="nav-link text-gray-200 hover:text-cyan-300 transition" data-page="index">Home</a>
+                <a href="about.html" class="nav-link text-gray-200 hover:text-cyan-300 transition" data-page="about">About</a>
+                <a href="projects.html" class="nav-link text-gray-200 hover:text-cyan-300 transition" data-page="projects">Projects</a>
+                <a href="contact.html" class="nav-link text-gray-200 hover:text-cyan-300 transition" data-page="contact">Contact</a>
             </div>
             <button id="mobile-menu-button" class="md:hidden text-white text-2xl"><i class="fas fa-bars"></i></button>
         </div>
         <div id="mobile-menu" class="hidden md:hidden bg-black/70 backdrop-blur-xl border-t border-white/10">
             <div class="container mx-auto px-4 py-3 flex flex-col space-y-3">
-                <a href="index.html" class="text-gray-200 hover:text-cyan-300">Home</a>
-                <a href="about.html" class="text-gray-200 hover:text-cyan-300">About</a>
-                <a href="projects.html" class="text-gray-200 hover:text-cyan-300">Projects</a>
-                <a href="contact.html" class="text-gray-200 hover:text-cyan-300">Contact</a>
+                <a href="index.html" data-page="index">Home</a>
+                <a href="about.html" data-page="about">About</a>
+                <a href="projects.html" data-page="projects">Projects</a>
+                <a href="contact.html" data-page="contact">Contact</a>
             </div>
         </div>
     </nav>
-    
+
     <main class="container mx-auto px-4 py-12 md:py-20 relative z-10">
         <!-- Hero Section -->
         <section class="flex flex-col lg:flex-row items-center gap-12 mb-28 reveal">
@@ -309,379 +404,647 @@
             </div>
             <div class="text-center lg:text-left">
                 <div class="inline-block px-4 py-1 rounded-full bg-cyan-500/20 border border-cyan-400/50 text-cyan-300 text-sm font-mono mb-4">✨ 3D Web Alchemist</div>
-                <h1 class="text-5xl md:text-7xl font-black mb-4">Hi, I'm <span class="bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">Vishal Kumar</span></h1>
+                <h1 class="text-5xl md:text-7xl font-black mb-4">
+                    Hi, I'm <span class="tilt-text shimmer-text" id="nameText">Vishal Kumar</span>
+                </h1>
                 <h2 class="text-2xl md:text-3xl mb-6"><span id="typed-text" class="text-cyan-300"></span><span class="typed-cursor">|</span></h2>
                 <p class="text-gray-400 max-w-xl mb-8 text-lg">I build immersive web experiences with 3D interactions, AI chatbots, and jaw-dropping animations.</p>
                 <div class="flex flex-col sm:flex-row gap-5 justify-center lg:justify-start">
-                    <a href="projects.html" class="group relative px-8 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full font-bold text-white shadow-lg hover:shadow-cyan-500/50 transition-all hover:scale-105">✨ Explore My Work</a>
-                    <a href="#" id="resumeBtn" class="px-8 py-3 border border-cyan-400 text-cyan-400 rounded-full font-semibold hover:bg-cyan-500/10 transition-all hover:scale-105 backdrop-blur-sm">📄 Download Resume</a>
+                    <a href="projects.html" class="magnetic-btn px-8 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full font-bold text-white shadow-lg hover:shadow-cyan-500/50 transition-all hover:scale-105" data-page="projects">✨ Explore My Work</a>
+                    <a href="Resume1.pdf" download="Vishal_Kumar_Resume.pdf" class="magnetic-btn px-8 py-3 border border-cyan-400 text-cyan-400 rounded-full font-semibold hover:bg-cyan-500/10 transition-all hover:scale-105 backdrop-blur-sm">📄 Download Resume</a>
                 </div>
+                <div class="mt-6 visitor-badge text-cyan-300"><i class="fas fa-eye mr-2"></i> <span id="visitorCounter">0</span> visitors today</div>
             </div>
         </section>
         
         <!-- Stats Counters -->
         <section class="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto mb-28 reveal">
-            <div class="glass-card p-6 text-center tilt-card"><div class="counter" id="counterProjects" data-target="15">0</div><p class="text-gray-400">Projects Completed</p></div>
-            <div class="glass-card p-6 text-center tilt-card"><div class="counter" id="counterClients" data-target="12">0</div><p class="text-gray-400">Happy Clients</p></div>
-            <div class="glass-card p-6 text-center tilt-card"><div class="counter" id="counterCode" data-target="25000">0</div><p class="text-gray-400">Lines of Code</p></div>
-            <div class="glass-card p-6 text-center tilt-card"><div class="counter" id="counterExp" data-target="3">0</div><p class="text-gray-400">Years Experience</p></div>
+            <div class="glass-card p-6 text-center tilt-card">
+                <div class="flip-card" id="flip0"><div class="flip-card-inner"><div class="flip-card-front counter" data-target="15">0</div><div class="flip-card-back counter">0</div></div></div>
+                <p class="text-gray-400 mt-2">Projects</p>
+            </div>
+            <div class="glass-card p-6 text-center tilt-card">
+                <div class="flip-card" id="flip1"><div class="flip-card-inner"><div class="flip-card-front counter" data-target="12">0</div><div class="flip-card-back counter">0</div></div></div>
+                <p class="text-gray-400 mt-2">Happy Clients</p>
+            </div>
+            <div class="glass-card p-6 text-center tilt-card">
+                <div class="flip-card" id="flip2"><div class="flip-card-inner"><div class="flip-card-front counter" data-target="25000">0</div><div class="flip-card-back counter">0</div></div></div>
+                <p class="text-gray-400 mt-2">Lines of Code</p>
+            </div>
+            <div class="glass-card p-6 text-center tilt-card">
+                <div class="flip-card" id="flip3"><div class="flip-card-inner"><div class="flip-card-front counter" data-target="3">0</div><div class="flip-card-back counter">0</div></div></div>
+                <p class="text-gray-400 mt-2">Years Experience</p>
+            </div>
         </section>
-        
-        <!-- 3D Skill Cube (touch + mouse) -->
+
+        <!-- 3D Skill Cube -->
         <section class="max-w-5xl mx-auto mb-28 reveal">
-            <h2 class="text-4xl font-bold text-center mb-10"><span class="border-b-4 border-cyan-400 pb-2">🧊 Interactive 3D Skill Cube</span></h2>
+            <h2 class="text-4xl font-bold text-center mb-10"><span class="border-b-4 border-cyan-400 pb-2">🧊 3D Skill Cube</span></h2>
             <div id="skillCubeContainer" class="w-full h-96 glass-card rounded-2xl overflow-hidden"></div>
-            <p class="text-center text-gray-400 mt-4">Drag to rotate the cube — each face shows a skill category</p>
+            <p class="text-center text-gray-400 mt-4">Drag to rotate — auto‑rotates</p>
         </section>
-        
+
         <!-- Timeline -->
         <section class="max-w-4xl mx-auto mb-28 reveal">
             <h2 class="text-4xl font-bold text-center mb-10"><span class="border-b-4 border-cyan-400 pb-2">📅 My Journey</span></h2>
             <div class="relative border-l-4 border-cyan-400 ml-6 md:ml-12">
-                <div class="mb-8 ml-6"><div class="glass-card p-5 tilt-card"><h3 class="text-xl font-bold text-cyan-300">2022 – Present</h3><p class="font-semibold">B.Tech Computer Science @ Dronacharya College</p><p class="text-gray-400">Specializing in Web3, 3D graphics, and full-stack development.</p></div></div>
-                <div class="mb-8 ml-6"><div class="glass-card p-5 tilt-card"><h3 class="text-xl font-bold text-cyan-300">2023 – Freelance Web Developer</h3><p class="font-semibold">Built 10+ websites for local businesses and startups</p><p class="text-gray-400">React, Node.js, Three.js implementations.</p></div></div>
-                <div class="mb-8 ml-6"><div class="glass-card p-5 tilt-card"><h3 class="text-xl font-bold text-cyan-300">2024 – Open Source Contributor</h3><p class="font-semibold">Contributed to Three.js examples and Tailwind UI kits</p><p class="text-gray-400">Recognized in GitHub community.</p></div></div>
+                <div class="mb-8 ml-6"><div class="glass-card p-5 tilt-card"><h3 class="text-xl font-bold text-cyan-300">2022 – Present</h3><p class="font-semibold">B.Tech CS @ Dronacharya College</p><p class="text-gray-400">Web3, 3D graphics, full-stack.</p></div></div>
+                <div class="mb-8 ml-6"><div class="glass-card p-5 tilt-card"><h3 class="text-xl font-bold text-cyan-300">2023 – Freelance</h3><p class="font-semibold">10+ websites for businesses</p><p class="text-gray-400">React, Node.js, Three.js.</p></div></div>
+                <div class="mb-8 ml-6"><div class="glass-card p-5 tilt-card"><h3 class="text-xl font-bold text-cyan-300">2024 – Open Source</h3><p class="font-semibold">Three.js & Tailwind UI contributions</p><p class="text-gray-400">Recognized in GitHub community.</p></div></div>
             </div>
         </section>
-        
-        <!-- Featured Projects (demo links can be replaced) -->
+
+        <!-- Featured Projects (with stagger) -->
         <section class="max-w-6xl mx-auto mb-28 reveal">
             <h2 class="text-4xl font-bold text-center mb-12"><span class="border-b-4 border-cyan-400 pb-2">🌟 Featured Projects</span></h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
-                <div class="glass-card overflow-hidden tilt-card"><div class="h-56 bg-gradient-to-tr from-gray-900 to-cyan-900/40 flex items-center justify-center"><i class="fas fa-video text-7xl text-cyan-300 float-icon"></i></div><div class="p-6"><h3 class="text-2xl font-bold text-cyan-300">Student Video Player</h3><p class="text-gray-300 my-3">Ad‑free, minimalist video player for students.</p><a href="#" class="text-cyan-400 hover:underline">Live Demo →</a></div></div>
-                <div class="glass-card overflow-hidden tilt-card"><div class="h-56 bg-gradient-to-tr from-gray-900 to-purple-900/40 flex items-center justify-center"><i class="fas fa-briefcase text-7xl text-cyan-300 float-icon"></i></div><div class="p-6"><h3 class="text-2xl font-bold text-cyan-300">Job Portal</h3><p class="text-gray-300 my-3">Connecting communities with jobs.</p><a href="#" class="text-cyan-400 hover:underline">Live Demo →</a></div></div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-10 stagger-grid">
+                <!-- Project 1 -->
+                <div class="glass-card overflow-hidden tilt-card holographic-card stagger-item">
+                    <div class="h-56 home-img-container">
+                        <img src="https://images.unsplash.com/photo-1594904351111-a072f80b1a71?w=600&h=400&fit=crop" alt="Student Video Player" class="home-project-img" 
+                             onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'w-full h-full bg-gradient-to-tr from-cyan-800 to-blue-800 flex items-center justify-center\'><i class=\'fas fa-video text-7xl text-white float-icon\'></i></div>'">
+                    </div>
+                    <div class="p-6 card-content">
+                        <h3 class="text-2xl font-bold text-cyan-300">Student Video Player</h3>
+                        <p class="text-gray-300 my-3">Ad‑free, minimalist video player for students.</p>
+                        <a href="https://vkboss49264.github.io/videosplayer/" target="_blank" class="text-cyan-400 hover:underline neon-icon">Live Demo →</a>
+                    </div>
+                </div>
+                <!-- Project 2 -->
+                <div class="glass-card overflow-hidden tilt-card holographic-card stagger-item">
+                    <div class="h-56 home-img-container">
+                        <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=600&h=400&fit=crop" alt="Job Portal" class="home-project-img"
+                             onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'w-full h-full bg-gradient-to-tr from-purple-800 to-indigo-800 flex items-center justify-center\'><i class=\'fas fa-briefcase text-7xl text-white float-icon\'></i></div>'">
+                    </div>
+                    <div class="p-6 card-content">
+                        <h3 class="text-2xl font-bold text-cyan-300">Job Opportunities Portal</h3>
+                        <p class="text-gray-300 my-3">Connecting job seekers with employers.</p>
+                        <a href="https://vkboss49264.github.io/business-website/" target="_blank" class="text-cyan-400 hover:underline neon-icon">Live Demo →</a>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center mt-10">
+                <a href="projects.html" class="magnetic-btn inline-block px-8 py-3 border border-cyan-400 text-cyan-400 rounded-full font-semibold hover:bg-cyan-500/10 transition hover:scale-105" data-page="projects">🔍 View All Projects</a>
             </div>
         </section>
-        
-        <!-- Testimonials Carousel -->
+
+        <!-- Testimonials -->
         <section class="max-w-4xl mx-auto mb-28 reveal">
             <h2 class="text-4xl font-bold text-center mb-10"><span class="border-b-4 border-cyan-400 pb-2">🎠 What People Say</span></h2>
-            <div class="carousel-3d relative h-64 flex items-center justify-center">
-                <div id="testimonialCarousel" class="relative w-full max-w-lg mx-auto"><div class="carousel-item glass-card p-6 text-center transition-all duration-500"><i class="fas fa-quote-left text-cyan-400 text-2xl mb-3"></i><p>"Vishal's 3D portfolio blew me away! He's a creative genius."</p><h4 class="font-bold mt-3">— Client Saket</h4></div></div>
+            <div class="relative h-64 flex items-center justify-center">
+                <div id="testimonialCarousel" class="w-full max-w-lg mx-auto"><div class="carousel-item glass-card p-6 text-center"><i class="fas fa-quote-left text-cyan-400 text-2xl mb-3"></i><p>"Vishal's 3D portfolio blew me away! He's a creative genius."</p><h4 class="font-bold mt-3">— Client Saket</h4></div></div>
                 <button id="prevTesti" class="absolute left-0 bg-cyan-500/50 p-2 rounded-full"><i class="fas fa-chevron-left"></i></button>
                 <button id="nextTesti" class="absolute right-0 bg-cyan-500/50 p-2 rounded-full"><i class="fas fa-chevron-right"></i></button>
             </div>
         </section>
-        
-        <!-- Call to Action -->
+
+        <!-- CTA -->
         <section class="max-w-3xl mx-auto text-center mb-16 reveal">
             <div class="glass-card p-10">
-                <h2 class="text-4xl font-bold mb-5">Let's Build Something <span class="bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">Extraordinary</span></h2>
-                <p class="text-xl text-gray-300 mb-8">Got an idea that needs crazy animations or 3D magic? I'm your guy.</p>
-                <a href="contact.html" class="inline-block px-10 py-4 bg-gradient-to-r from-cyan-500 to-purple-600 rounded-full text-white font-bold text-lg shadow-xl hover:scale-105 transition">📬 Start a Project</a>
+                <h2 class="text-4xl font-bold mb-5">Let's Build <span class="bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">Something Extraordinary</span></h2>
+                <p class="text-xl text-gray-300 mb-8">Got an idea? I'm your guy.</p>
+                <a href="contact.html" class="magnetic-btn inline-block px-10 py-4 bg-gradient-to-r from-cyan-500 to-purple-600 rounded-full text-white font-bold text-lg shadow-xl hover:scale-105 transition" data-page="contact">📬 Start a Project</a>
             </div>
         </section>
     </main>
-    
+
     <footer class="bg-black/30 backdrop-blur-md border-t border-white/10 py-8"><div class="container mx-auto px-4 text-center text-gray-500"><p>&copy; <span id="year"></span> Vishal Kumar — All dimensions reserved.</p></div></footer>
-    
-    <audio id="bgMusic" loop preload="auto"><source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg"></audio>
-    
+
+    <audio id="bgMusic" loop preload="auto" crossorigin="anonymous"><source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg"></audio>
+
+    <!-- Three.js -->
+    <script type="importmap">
+        { "imports": { "three": "https://unpkg.com/three@0.170.0/build/three.module.js" } }
+    </script>
+
     <script type="module">
         import * as THREE from 'three';
-        
-        // --- Three.js Particle Background ---
-        const canvasContainer = document.getElementById('threeCanvas');
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.z = 30;
-        const renderer = new THREE.WebGLRenderer({ alpha: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setClearColor(0x000000, 0);
-        canvasContainer.appendChild(renderer.domElement);
-        
-        const particleCount = 1500;
-        const particlesGeometry = new THREE.BufferGeometry();
-        const positions = new Float32Array(particleCount * 3);
-        for (let i = 0; i < particleCount; i++) {
-            positions[i*3] = (Math.random() - 0.5) * 100;
-            positions[i*3+1] = (Math.random() - 0.5) * 60;
-            positions[i*3+2] = (Math.random() - 0.5) * 80 - 40;
-        }
-        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-        const particleMaterial = new THREE.PointsMaterial({ color: 0x06b6d4, size: 0.2, transparent: true, opacity: 0.6 });
-        const particles = new THREE.Points(particlesGeometry, particleMaterial);
-        scene.add(particles);
-        
-        const knotGeo = new THREE.TorusKnotGeometry(2, 0.5, 100, 16);
-        const knotMat = new THREE.MeshStandardMaterial({ color: 0xa855f7, emissive: 0x06b6d4, emissiveIntensity: 0.3 });
-        const knot = new THREE.Mesh(knotGeo, knotMat);
-        scene.add(knot);
-        
-        const ambientLight = new THREE.AmbientLight(0x404060);
-        scene.add(ambientLight);
-        const dirLight = new THREE.DirectionalLight(0xffffff, 1);
-        dirLight.position.set(5, 10, 7);
-        scene.add(dirLight);
-        
-        let mouseX = 0, mouseY = 0;
-        document.addEventListener('mousemove', (e) => {
-            mouseX = (e.clientX / window.innerWidth) * 2 - 1;
-            mouseY = (e.clientY / window.innerHeight) * 2 - 1;
-            particles.rotation.y = mouseX * 0.5;
-            particles.rotation.x = mouseY * 0.3;
-        });
-        
-        function animate3D() {
-            requestAnimationFrame(animate3D);
-            knot.rotation.x += 0.005;
-            knot.rotation.y += 0.01;
-            knot.rotation.z += 0.007;
-            particles.rotation.y += 0.0005;
-            renderer.render(scene, camera);
-        }
-        animate3D();
-        
-        // --- Skill Cube (touch + mouse) ---
-        const cubeContainer = document.getElementById('skillCubeContainer');
-        const cubeScene = new THREE.Scene();
-        const cubeCamera = new THREE.PerspectiveCamera(45, cubeContainer.clientWidth / cubeContainer.clientHeight, 0.1, 1000);
-        cubeCamera.position.set(0, 0, 5);
-        const cubeRenderer = new THREE.WebGLRenderer({ alpha: true });
-        cubeRenderer.setSize(cubeContainer.clientWidth, cubeContainer.clientHeight);
-        cubeContainer.appendChild(cubeRenderer.domElement);
-        
-        const cubeGeo = new THREE.BoxGeometry(2, 2, 2);
-        const materials = [
-            new THREE.MeshStandardMaterial({ color: 0x06b6d4, roughness: 0.3, metalness: 0.7 }),
-            new THREE.MeshStandardMaterial({ color: 0x3b82f6, roughness: 0.3, metalness: 0.7 }),
-            new THREE.MeshStandardMaterial({ color: 0x10b981, roughness: 0.3, metalness: 0.7 }),
-            new THREE.MeshStandardMaterial({ color: 0xf59e0b, roughness: 0.3, metalness: 0.7 }),
-            new THREE.MeshStandardMaterial({ color: 0xef4444, roughness: 0.3, metalness: 0.7 }),
-            new THREE.MeshStandardMaterial({ color: 0x8b5cf6, roughness: 0.3, metalness: 0.7 })
-        ];
-        const cube = new THREE.Mesh(cubeGeo, materials);
-        cubeScene.add(cube);
-        const ambientCube = new THREE.AmbientLight(0x404060);
-        cubeScene.add(ambientCube);
-        const lightCube = new THREE.DirectionalLight(0xffffff, 1);
-        lightCube.position.set(1, 2, 3);
-        cubeScene.add(lightCube);
-        
-        let isDragging = false;
-        let lastX = 0, lastY = 0;
-        
-        function getDragDelta(e) {
-            let clientX, clientY;
-            if (e.touches) {
-                clientX = e.touches[0].clientX;
-                clientY = e.touches[0].clientY;
-            } else {
-                clientX = e.clientX;
-                clientY = e.clientY;
+
+        // -------- 3D ENGINE (same as before, but with updated version) --------
+        try {
+            const canvas = document.getElementById('threeCanvas');
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+            camera.position.set(0,0,30);
+            const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setClearColor(0x000000, 0);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+            canvas.appendChild(renderer.domElement);
+
+            // Colors for morph
+            const colors = [new THREE.Color(0x06b6d4), new THREE.Color(0xa855f7), new THREE.Color(0xec4899), new THREE.Color(0x3b82f6)];
+            function getColor(t) {
+                const seg = 1/(colors.length-1);
+                const idx = Math.min(Math.floor(t/seg), colors.length-2);
+                const frac = (t - idx*seg)/seg;
+                return colors[idx].clone().lerp(colors[idx+1]||colors[0], frac);
             }
-            const deltaX = clientX - lastX;
-            const deltaY = clientY - lastY;
-            lastX = clientX;
-            lastY = clientY;
-            return { deltaX, deltaY };
-        }
-        
-        function onDragStart(e) {
-            isDragging = true;
-            if (e.touches) {
-                lastX = e.touches[0].clientX;
-                lastY = e.touches[0].clientY;
-            } else {
-                lastX = e.clientX;
-                lastY = e.clientY;
+            let scrollProgress = 0;
+            window.addEventListener('scroll', () => {
+                const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+                scrollProgress = maxScroll > 0 ? window.scrollY / maxScroll : 0;
+            });
+
+            // Constellation
+            const starCount = 800;
+            const pos = new Float32Array(starCount*3);
+            for (let i=0; i<starCount; i++) {
+                pos[i*3] = (Math.random()-0.5)*100;
+                pos[i*3+1] = (Math.random()-0.5)*60;
+                pos[i*3+2] = (Math.random()-0.5)*80 - 20;
             }
-            e.preventDefault();
-        }
-        
-        function onDragMove(e) {
-            if (!isDragging) return;
-            const { deltaX, deltaY } = getDragDelta(e);
-            cube.rotation.y += deltaX * 0.01;
-            cube.rotation.x += deltaY * 0.01;
-            e.preventDefault();
-        }
-        
-        function onDragEnd(e) {
-            isDragging = false;
-        }
-        
-        cubeContainer.addEventListener('mousedown', onDragStart);
-        window.addEventListener('mousemove', onDragMove);
-        window.addEventListener('mouseup', onDragEnd);
-        cubeContainer.addEventListener('touchstart', onDragStart, { passive: false });
-        window.addEventListener('touchmove', onDragMove, { passive: false });
-        window.addEventListener('touchend', onDragEnd);
-        
-        function animateCube() { requestAnimationFrame(animateCube); cubeRenderer.render(cubeScene, cubeCamera); }
-        animateCube();
-        window.addEventListener('resize', () => {
+            const starGeo = new THREE.BufferGeometry();
+            starGeo.setAttribute('position', new THREE.BufferAttribute(pos,3));
+            const starMat = new THREE.PointsMaterial({ color:0x06b6d4, size:0.3, transparent:true, opacity:0.8, blending:THREE.AdditiveBlending, sizeAttenuation:true });
+            const starField = new THREE.Points(starGeo, starMat);
+            scene.add(starField);
+
+            // Lines
+            const linePos = [];
+            const arr = starGeo.attributes.position.array;
+            for (let i=0; i<starCount; i++) {
+                for (let j=i+1; j<starCount; j++) {
+                    const dx = arr[i*3]-arr[j*3], dy = arr[i*3+1]-arr[j*3+1], dz = arr[i*3+2]-arr[j*3+2];
+                    if (Math.sqrt(dx*dx+dy*dy+dz*dz) < 6) {
+                        linePos.push(arr[i*3], arr[i*3+1], arr[i*3+2]);
+                        linePos.push(arr[j*3], arr[j*3+1], arr[j*3+2]);
+                    }
+                }
+            }
+            const lineGeo = new THREE.BufferGeometry();
+            lineGeo.setAttribute('position', new THREE.Float32BufferAttribute(linePos,3));
+            const lineMat = new THREE.LineBasicMaterial({ color:0x06b6d4, transparent:true, opacity:0.25, blending:THREE.AdditiveBlending });
+            const lines = new THREE.LineSegments(lineGeo, lineMat);
+            scene.add(lines);
+
+            // Portal
+            const portalGroup = new THREE.Group();
+            portalGroup.position.set(0,0,-8);
+            const glowCanvas = document.createElement('canvas');
+            glowCanvas.width=128; glowCanvas.height=128;
+            const ctx = glowCanvas.getContext('2d');
+            const grad = ctx.createRadialGradient(64,64,0,64,64,64);
+            grad.addColorStop(0,'rgba(6,182,212,1)');
+            grad.addColorStop(0.4,'rgba(168,85,247,0.8)');
+            grad.addColorStop(1,'rgba(0,0,0,0)');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0,0,128,128);
+            const glowTex = new THREE.CanvasTexture(glowCanvas);
+            const glowMat = new THREE.SpriteMaterial({ map:glowTex, blending:THREE.AdditiveBlending, transparent:true, opacity:0.6 });
+            const glowSprite = new THREE.Sprite(glowMat);
+            glowSprite.scale.set(12,12,1);
+            portalGroup.add(glowSprite);
+            const rings = [];
+            for (let i=0; i<3; i++) {
+                const radius = 2.5 + i*1.2;
+                const geo = new THREE.TorusGeometry(radius, 0.04, 32, 64);
+                const mat = new THREE.MeshStandardMaterial({
+                    color: i%2===0 ? 0x06b6d4 : 0xa855f7,
+                    emissive: i%2===0 ? 0x06b6d4 : 0xa855f7,
+                    emissiveIntensity: 0.4 + i*0.1,
+                    transparent: true, opacity: 0.4 + i*0.1,
+                    side: THREE.DoubleSide, blending: THREE.AdditiveBlending
+                });
+                const mesh = new THREE.Mesh(geo, mat);
+                mesh.rotation.x = Math.PI/2;
+                mesh.rotation.z = (i/3)*Math.PI*2;
+                portalGroup.add(mesh);
+                rings.push(mesh);
+            }
+            scene.add(portalGroup);
+
+            // Orbital Icons
+            const techs = ['React','Node.js','Python','Three.js','MongoDB','Firebase','Git','Docker'];
+            const orbitGroup = new THREE.Group();
+            orbitGroup.position.set(0,0,-3);
+            techs.forEach((name, idx) => {
+                const angle = (idx/techs.length)*Math.PI*2;
+                const c = document.createElement('canvas');
+                c.width=256; c.height=128;
+                const cx = c.getContext('2d');
+                cx.fillStyle='rgba(0,0,0,0)'; cx.fillRect(0,0,256,128);
+                cx.font='bold 40px Inter, sans-serif';
+                cx.textAlign='center'; cx.textBaseline='middle';
+                cx.shadowColor='#06b6d4'; cx.shadowBlur=20;
+                cx.fillStyle='#ffffff'; cx.fillText(name,128,64);
+                cx.shadowBlur=0;
+                cx.fillStyle='rgba(6,182,212,0.15)';
+                const tw = cx.measureText(name).width;
+                cx.fillRect(128-tw/2-20, 64-25, tw+40, 50);
+                cx.strokeStyle='rgba(6,182,212,0.5)'; cx.lineWidth=2;
+                cx.strokeRect(128-tw/2-20, 64-25, tw+40, 50);
+                cx.shadowColor='#06b6d4'; cx.shadowBlur=15;
+                cx.fillStyle='#06b6d4'; cx.fillText(name,128,64);
+                const tex = new THREE.CanvasTexture(c);
+                const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map:tex, transparent:true, depthTest:false, blending:THREE.AdditiveBlending }));
+                sprite.position.set(Math.cos(angle)*5.5, Math.sin(angle)*5.5*0.6, 0);
+                sprite.scale.set(3.5,1.8,1);
+                orbitGroup.add(sprite);
+            });
+            scene.add(orbitGroup);
+
+            // 3D Text Sprite (using canvas)
+            const makeText = (text, color='#06b6d4') => {
+                const c = document.createElement('canvas');
+                c.width=1024; c.height=256;
+                const cx = c.getContext('2d');
+                cx.clearRect(0,0,1024,256);
+                cx.shadowColor=color; cx.shadowBlur=40;
+                cx.font='bold 120px Inter, sans-serif';
+                cx.textAlign='center'; cx.textBaseline='middle';
+                cx.fillStyle=color; cx.fillText(text,512,128+10);
+                cx.shadowBlur=0;
+                cx.fillStyle='rgba(6,182,212,0.05)';
+                cx.strokeStyle=color; cx.lineWidth=4;
+                cx.strokeText(text,512,128+10);
+                const tex = new THREE.CanvasTexture(c);
+                const mat = new THREE.SpriteMaterial({ map:tex, transparent:true, depthTest:true, blending:THREE.AdditiveBlending, opacity:0.95 });
+                const sprite = new THREE.Sprite(mat);
+                sprite.scale.set(12,3,1);
+                return sprite;
+            };
+            const textSprite = makeText('Vishal Kumar', '#06b6d4');
+            textSprite.position.set(0,1.2,-1);
+            scene.add(textSprite);
+
+            // Comet Trail
+            const trailCount = 30;
+            const trailMeshes = [];
+            for (let i=0; i<trailCount; i++) {
+                const size = 0.2 + (i/trailCount)*0.4;
+                const mat = new THREE.MeshBasicMaterial({
+                    color:0x06b6d4,
+                    transparent:true,
+                    opacity:0.8 - (i/trailCount)*0.7,
+                    blending:THREE.AdditiveBlending
+                });
+                const mesh = new THREE.Mesh(new THREE.SphereGeometry(size,8,8), mat);
+                mesh.visible = false;
+                scene.add(mesh);
+                trailMeshes.push(mesh);
+            }
+            const mousePos = new THREE.Vector2(0,0);
+            document.addEventListener('mousemove', e => {
+                mousePos.x = (e.clientX/window.innerWidth)*2 - 1;
+                mousePos.y = -(e.clientY/window.innerHeight)*2 + 1;
+            });
+
+            // Audio Visualizer
+            let audioCtx, analyser, dataArr;
+            const visGroup = new THREE.Group();
+            visGroup.position.set(0,-8,-5);
+            const barCount=24;
+            const barMeshes=[];
+            for (let i=0; i<barCount; i++) {
+                const mesh = new THREE.Mesh(
+                    new THREE.SphereGeometry(0.15,8,8),
+                    new THREE.MeshBasicMaterial({ color:0x06b6d4, transparent:true, opacity:0.6, blending:THREE.AdditiveBlending })
+                );
+                const angle = (i/barCount)*Math.PI*2;
+                mesh.position.set(Math.cos(angle)*2.5, Math.sin(angle)*2.5, 0);
+                mesh.userData.angle = angle;
+                visGroup.add(mesh);
+                barMeshes.push(mesh);
+            }
+            scene.add(visGroup);
+            let audioInit = false;
+            document.getElementById('musicToggle').addEventListener('click', async () => {
+                if (audioInit) return;
+                try {
+                    const audio = document.getElementById('bgMusic');
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                    const source = audioCtx.createMediaElementSource(audio);
+                    analyser = audioCtx.createAnalyser();
+                    analyser.fftSize = 64;
+                    source.connect(analyser);
+                    analyser.connect(audioCtx.destination);
+                    dataArr = new Uint8Array(analyser.frequencyBinCount);
+                    audioInit = true;
+                    if (audioCtx.state === 'suspended') await audioCtx.resume();
+                } catch(e) { /* silent */ }
+            });
+
+            // Skill Cube
+            const cubeContainer = document.getElementById('skillCubeContainer');
+            const cubeScene = new THREE.Scene();
+            const cubeCamera = new THREE.PerspectiveCamera(45, cubeContainer.clientWidth/cubeContainer.clientHeight, 0.1, 1000);
+            cubeCamera.position.set(0,0,5);
+            const cubeRenderer = new THREE.WebGLRenderer({ alpha:true, antialias:true });
             cubeRenderer.setSize(cubeContainer.clientWidth, cubeContainer.clientHeight);
-            cubeCamera.aspect = cubeContainer.clientWidth / cubeContainer.clientHeight;
-            cubeCamera.updateProjectionMatrix();
+            cubeRenderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+            cubeContainer.appendChild(cubeRenderer.domElement);
+
+            const cubeMat = new THREE.MeshPhysicalMaterial({
+                color:0x06b6d4, metalness:0.1, roughness:0.15, clearcoat:1.0, clearcoatRoughness:0.1,
+                transparent:true, opacity:0.85, envMapIntensity:1.0, emissive:0x06b6d4, emissiveIntensity:0.1
+            });
+            const cubeColors = [0x06b6d4,0x3b82f6,0x10b981,0xf59e0b,0xef4444,0x8b5cf6];
+            const cubeMats = cubeColors.map(c => { const m = cubeMat.clone(); m.color.setHex(c); return m; });
+            const cube = new THREE.Mesh(new THREE.BoxGeometry(2,2,2), cubeMats);
+            cubeScene.add(cube);
+            cubeScene.add(new THREE.AmbientLight(0x404060,0.8));
+            const l1 = new THREE.DirectionalLight(0xffffff,1.2); l1.position.set(1,2,3); cubeScene.add(l1);
+            const l2 = new THREE.DirectionalLight(0xa855f7,0.6); l2.position.set(-1,-1,-2); cubeScene.add(l2);
+
+            const vortexGroup = new THREE.Group();
+            const vNames = ['React','Node','Python','Three','Mongo','Firebase','Git','Docker','Tailwind','JS'];
+            vNames.forEach((name, i) => {
+                const c = document.createElement('canvas');
+                c.width=128; c.height=64;
+                const cx = c.getContext('2d');
+                cx.fillStyle='rgba(0,0,0,0)'; cx.fillRect(0,0,128,64);
+                cx.font='bold 24px Inter, sans-serif';
+                cx.textAlign='center'; cx.textBaseline='middle';
+                cx.shadowColor='#06b6d4'; cx.shadowBlur=10;
+                cx.fillStyle='#ffffff'; cx.fillText(name,64,32);
+                const tex = new THREE.CanvasTexture(c);
+                const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map:tex, transparent:true, depthTest:false, blending:THREE.AdditiveBlending }));
+                const angle = (i/vNames.length)*Math.PI*2;
+                sprite.position.set(Math.cos(angle)*1.8, (i/vNames.length)*3-1.5, Math.sin(angle)*1.8);
+                sprite.scale.set(1.6,0.8,1);
+                vortexGroup.add(sprite);
+            });
+            cubeScene.add(vortexGroup);
+
+            let cubeAuto = true, cubeDrag = false;
+            let cLastX=0, cLastY=0;
+            const onCDS = (e) => { cubeDrag=true; cubeAuto=false; const t=e.touches?e.touches[0]:e; cLastX=t.clientX; cLastY=t.clientY; e.preventDefault(); };
+            const onCDM = (e) => { if(!cubeDrag)return; const t=e.touches?e.touches[0]:e; const dx=t.clientX-cLastX, dy=t.clientY-cLastY; cube.rotation.y+=dx*0.01; cube.rotation.x+=dy*0.01; vortexGroup.rotation.y+=dx*0.01; vortexGroup.rotation.x+=dy*0.01; cLastX=t.clientX; cLastY=t.clientY; e.preventDefault(); };
+            const onCDE = () => { cubeDrag=false; setTimeout(()=>{ if(!cubeDrag) cubeAuto=true; },2000); };
+            cubeContainer.addEventListener('mousedown', onCDS);
+            window.addEventListener('mousemove', onCDM);
+            window.addEventListener('mouseup', onCDE);
+            cubeContainer.addEventListener('touchstart', onCDS, {passive:false});
+            window.addEventListener('touchmove', onCDM, {passive:false});
+            window.addEventListener('touchend', onCDE);
+
+            function animCube() {
+                requestAnimationFrame(animCube);
+                if (cubeAuto && !cubeDrag) {
+                    cube.rotation.x += 0.005; cube.rotation.y += 0.01; cube.rotation.z += 0.003;
+                    vortexGroup.rotation.y += 0.008; vortexGroup.rotation.x += 0.002;
+                }
+                cubeRenderer.render(cubeScene, cubeCamera);
+            }
+            animCube();
+
+            // Main loop
+            function animMain() {
+                requestAnimationFrame(animMain);
+                try {
+                    const color = getColor(scrollProgress);
+                    starMat.color.copy(color);
+                    lineMat.color.copy(color);
+                    textSprite.material.color.setHex(color.getHex());
+                    rings.forEach((ring, idx) => {
+                        const c = getColor((scrollProgress + idx*0.1) % 1);
+                        ring.material.color.copy(c);
+                        ring.material.emissive.copy(c);
+                        ring.rotation.z += 0.005*(idx+1);
+                        ring.rotation.x += 0.003*(idx+1);
+                    });
+                    glowSprite.material.rotation += 0.001;
+                    orbitGroup.rotation.y += 0.008;
+
+                    starField.rotation.y += (mousePos.x*0.02 - starField.rotation.y)*0.01;
+                    starField.rotation.x += (mousePos.y*0.01 - starField.rotation.x)*0.01;
+                    lines.rotation.y = starField.rotation.y;
+                    lines.rotation.x = starField.rotation.x;
+
+                    const x = mousePos.x*15, y = mousePos.y*10;
+                    trailMeshes.forEach((mesh, i) => {
+                        const t = (i/trailCount)*2*Math.PI;
+                        mesh.position.set(x - Math.sin(t)*0.8*(i/trailCount), y - Math.cos(t)*0.8*(i/trailCount), -1);
+                        mesh.visible = true;
+                        mesh.material.opacity = 0.8 - (i/trailCount)*0.75;
+                        const s = 1 - (i/trailCount)*0.6;
+                        mesh.scale.set(s,s,s);
+                    });
+
+                    if (audioInit && analyser && dataArr) {
+                        analyser.getByteFrequencyData(dataArr);
+                        barMeshes.forEach((mesh, i) => {
+                            const freq = dataArr[i % dataArr.length] / 255;
+                            mesh.scale.set(1, 0.5 + freq*2.5, 1);
+                            mesh.position.z = Math.sin(mesh.userData.angle + Date.now()*0.002)*0.5;
+                            const c = getColor((scrollProgress + i*0.02) % 1);
+                            mesh.material.color.copy(c);
+                        });
+                    }
+
+                    renderer.render(scene, camera);
+                } catch(e) { /* silent */ }
+            }
+            animMain();
+
+            window.addEventListener('resize', () => {
+                renderer.setSize(window.innerWidth, window.innerHeight);
+                camera.aspect = window.innerWidth/window.innerHeight;
+                camera.updateProjectionMatrix();
+                cubeRenderer.setSize(cubeContainer.clientWidth, cubeContainer.clientHeight);
+                cubeCamera.aspect = cubeContainer.clientWidth/cubeContainer.clientHeight;
+                cubeCamera.updateProjectionMatrix();
+            });
+
+        } catch(e) { console.warn('3D init error:', e); }
+
+        // -------- NON-3D FEATURES (with new effects) --------
+        // 1. Magnetic Hover on buttons
+        document.querySelectorAll('.magnetic-btn').forEach(btn => {
+            btn.addEventListener('mousemove', (e) => {
+                const rect = btn.getBoundingClientRect();
+                const x = (e.clientX - rect.left) / rect.width - 0.5;
+                const y = (e.clientY - rect.top) / rect.height - 0.5;
+                btn.style.transform = `translate(${x * 12}px, ${y * 6}px) scale(1.05)`;
+            });
+            btn.addEventListener('mouseleave', () => {
+                btn.style.transform = 'translate(0,0) scale(1)';
+            });
         });
-        
-        // --- Mouse Orb ---
-        const orb = document.getElementById('mouseOrb');
-        document.addEventListener('mousemove', (e) => { orb.style.left = e.clientX - 30 + 'px'; orb.style.top = e.clientY - 30 + 'px'; });
-        
-        // --- Typing Animation ---
-        const roles = ["Full-Stack Dev", "3D Artist", "UI/UX Lover", "Open Source Contributor"];
-        let roleIndex = 0, charIndex = 0, isDeleting = false;
-        const typedSpan = document.getElementById('typed-text');
-        function typeEffect() {
-            const currentRole = roles[roleIndex];
-            if (isDeleting) { typedSpan.innerText = currentRole.substring(0, charIndex-1); charIndex--; }
-            else { typedSpan.innerText = currentRole.substring(0, charIndex+1); charIndex++; }
-            if (!isDeleting && charIndex === currentRole.length) { isDeleting = true; setTimeout(typeEffect, 2000); return; }
-            if (isDeleting && charIndex === 0) { isDeleting = false; roleIndex = (roleIndex+1) % roles.length; setTimeout(typeEffect, 500); return; }
-            setTimeout(typeEffect, isDeleting ? 50 : 100);
-        }
-        typeEffect();
-        
-        // --- Counters ---
-        function animateCounter(element, target) {
-            let current = 0;
-            const increment = target / 50;
-            const update = setInterval(() => {
-                current += increment;
-                if (current >= target) { element.innerText = target; clearInterval(update); }
-                else { element.innerText = Math.floor(current); }
-            }, 20);
-        }
-        const observerCounters = new IntersectionObserver((entries) => {
-            entries.forEach(entry => { if (entry.isIntersecting) { const target = parseInt(entry.target.getAttribute('data-target')); animateCounter(entry.target, target); observerCounters.unobserve(entry.target); } });
-        }, { threshold: 0.5 });
-        document.querySelectorAll('.counter').forEach(c => observerCounters.observe(c));
-        
-        // --- Scroll Reveal ---
+
+        // 2. Mouse-Responsive 3D Text Tilt
+        const nameText = document.getElementById('nameText');
+        document.addEventListener('mousemove', (e) => {
+            const x = (e.clientX / window.innerWidth - 0.5) * 10;
+            const y = (e.clientY / window.innerHeight - 0.5) * 10;
+            nameText.style.transform = `rotateX(${-y}deg) rotateY(${x}deg) translateZ(10px)`;
+        });
+
+        // 3. Staggered Scroll Reveal (for grid items)
+        const staggerItems = document.querySelectorAll('.stagger-item');
+        const staggerObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    // Add delay based on index
+                    const delay = (Array.from(staggerItems).indexOf(entry.target) * 150) % 1000;
+                    entry.target.style.transitionDelay = `${delay}ms`;
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { threshold: 0.2 });
+        staggerItems.forEach(item => staggerObserver.observe(item));
+
+        // 4. Existing reveal observer (for other sections)
         const reveals = document.querySelectorAll('.reveal');
-        const revealObserver = new IntersectionObserver((entries) => { entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('active'); }); }, { threshold: 0.15 });
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('active'); });
+        }, { threshold: 0.15 });
         reveals.forEach(r => revealObserver.observe(r));
-        
-        // --- Dark/Light Mode ---
-        const themeToggle = document.getElementById('themeToggle');
-        themeToggle.addEventListener('click', () => {
-            document.body.classList.toggle('dark');
-            document.body.classList.toggle('light');
-            const icon = themeToggle.querySelector('i');
-            if(document.body.classList.contains('dark')) icon.classList.replace('fa-sun', 'fa-moon');
-            else icon.classList.replace('fa-moon', 'fa-sun');
+
+        // 5. Flip counters (same as before)
+        const flipCards = document.querySelectorAll('.flip-card');
+        const fronts = document.querySelectorAll('.flip-card-front');
+        const targets = [15,12,25000,3];
+        let vals = [0,0,0,0];
+        function updateFlip(idx, val) {
+            if (vals[idx] !== val) {
+                const card = flipCards[idx];
+                const front = fronts[idx];
+                const back = card.querySelector('.flip-card-back');
+                if (back) back.innerText = val;
+                card.classList.add('flipped');
+                setTimeout(() => { if (front) front.innerText = val; card.classList.remove('flipped'); }, 300);
+                vals[idx] = val;
+            }
+        }
+        function animateCounter(idx) {
+            let curr = 0;
+            const target = targets[idx];
+            const inc = target / 50;
+            const interval = setInterval(() => {
+                curr += inc;
+                if (curr >= target) { curr = target; clearInterval(interval); }
+                updateFlip(idx, Math.floor(curr));
+            }, 30);
+        }
+        const counterObserver = new IntersectionObserver((entries) => {
+            entries.forEach(e => {
+                if (e.isIntersecting) {
+                    const idx = Array.from(fronts).indexOf(e.target);
+                    if (idx !== -1) animateCounter(idx);
+                    counterObserver.unobserve(e.target);
+                }
+            });
+        }, { threshold: 0.5 });
+        fronts.forEach(el => counterObserver.observe(el));
+
+        // 6. Visitor counter
+        let vc = parseInt(localStorage.getItem('visitCount') || '0') + 1;
+        localStorage.setItem('visitCount', vc);
+        document.getElementById('visitCount').innerText = vc;
+        document.getElementById('visitorCounter').innerText = vc;
+
+        document.getElementById('resetStats').addEventListener('click', () => {
+            localStorage.setItem('visitCount', '0');
+            location.reload();
         });
-        
-        // --- Music Toggle ---
-        const music = document.getElementById('bgMusic');
-        music.volume = 0.2;
-        let musicPlaying = false;
-        document.getElementById('musicToggle').addEventListener('click', () => { if(musicPlaying) music.pause(); else music.play(); musicPlaying = !musicPlaying; });
-        
-        // --- Chatbot ---
+
+        // 7. Chatbot
         const chatIcon = document.getElementById('chatIcon');
         const chatBox = document.getElementById('chatBox');
         const chatMessages = document.getElementById('chatMessages');
         const chatInput = document.getElementById('chatInput');
         const sendBtn = document.getElementById('sendChat');
-        function addMessage(msg, isUser) { const div = document.createElement('div'); div.className = isUser ? 'text-right text-cyan-300' : 'text-left text-gray-300'; div.innerText = (isUser ? 'You: ' : 'Bot: ') + msg; chatMessages.appendChild(div); chatMessages.scrollTop = chatMessages.scrollHeight; }
-        function botReply(query) { query = query.toLowerCase(); if(query.includes('project')) addMessage("I've built video player, job portal, and many 3D experiments!", false); else if(query.includes('skill')) addMessage("React, Three.js, Node, Python, MongoDB, and 3D design.", false); else if(query.includes('contact')) addMessage("You can reach me via contact page or email vk@example.com", false); else addMessage("Check out my projects or contact page for more!", false); }
+        function addMsg(msg, isUser) {
+            const div = document.createElement('div');
+            div.className = isUser ? 'text-right text-cyan-300' : 'text-left text-gray-300';
+            div.innerText = (isUser ? 'You: ' : 'Bot: ') + msg;
+            chatMessages.appendChild(div);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+        function botReply(q) {
+            q = q.toLowerCase();
+            if(q.includes('project')) addMsg("I've built video player, job portal, and many 3D experiments!", false);
+            else if(q.includes('skill')) addMsg("React, Three.js, Node, Python, MongoDB, and 3D design.", false);
+            else if(q.includes('contact')) addMsg("You can reach me via contact page or email vk@example.com", false);
+            else addMsg("Check out my projects or contact page for more!", false);
+        }
         chatIcon.addEventListener('click', () => chatBox.classList.toggle('hidden'));
-        sendBtn.addEventListener('click', () => { const msg = chatInput.value.trim(); if(msg) { addMessage(msg, true); botReply(msg); chatInput.value = ''; } });
-        chatInput.addEventListener('keypress', (e) => { if(e.key === 'Enter') sendBtn.click(); });
-        
-        // --- Testimonials Carousel ---
-        const testimonials = [{ text: "Vishal's 3D portfolio blew me away! He's a creative genius.", author: "— Client A" }, { text: "Amazing attention to detail and smooth animations.", author: "— Client B" }, { text: "One of the best developers I've worked with. Highly recommend!", author: "— Client C" }];
-        let testiIndex = 0;
-        const carouselItem = document.querySelector('.carousel-item');
-        function updateTestimonial() { carouselItem.innerHTML = `<i class="fas fa-quote-left text-cyan-400 text-2xl mb-3"></i><p>${testimonials[testiIndex].text}</p><h4 class="font-bold mt-3">${testimonials[testiIndex].author}</h4>`; }
-        document.getElementById('prevTesti').addEventListener('click', () => { testiIndex = (testiIndex-1+testimonials.length)%testimonials.length; updateTestimonial(); });
-        document.getElementById('nextTesti').addEventListener('click', () => { testiIndex = (testiIndex+1)%testimonials.length; updateTestimonial(); });
-        
-        // --- Admin Panel & Visit Counter ---
-        const admin = document.getElementById('adminPanel');
-        let visitCount = localStorage.getItem('visitCount') || 0;
-        visitCount = parseInt(visitCount)+1;
-        localStorage.setItem('visitCount', visitCount);
-        document.getElementById('visitCount').innerText = visitCount;
-        document.getElementById('resetStats').addEventListener('click', () => { localStorage.setItem('visitCount', 0); location.reload(); });
-        document.body.addEventListener('dblclick', (e) => { admin.classList.toggle('show'); });
-        
-        // --- Mobile Menu ---
-        document.getElementById('mobile-menu-button').addEventListener('click', () => { document.getElementById('mobile-menu').classList.toggle('hidden'); });
-        document.getElementById('year').innerText = new Date().getFullYear();
-        
-        // --- Parallax ---
-        window.addEventListener('scroll', () => { const scrolled = window.scrollY; document.getElementById('parallaxLayer').style.transform = `translateY(${scrolled * 0.2}px)`; });
-        
-        // --- Resume Download (PDF) ---
-        const resumeBtn = document.getElementById('resumeBtn');
-        resumeBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            
-            doc.setFont("helvetica", "bold");
-            doc.setFontSize(22);
-            doc.setTextColor(6, 182, 212);
-            doc.text("Vishal Kumar", 20, 25);
-            
-            doc.setFontSize(12);
-            doc.setTextColor(100, 100, 100);
-            doc.setFont("helvetica", "normal");
-            doc.text("Full-Stack Developer & 3D Creative Technologist", 20, 35);
-            doc.text("📞 +91 98765 43210  |  ✉️ vishal.kumar@vk18.dev  |  🌐 vk18.dev", 20, 45);
-            doc.line(20, 50, 190, 50);
-            
-            doc.setFontSize(14);
-            doc.setTextColor(6, 182, 212);
-            doc.setFont("helvetica", "bold");
-            doc.text("PROFESSIONAL SUMMARY", 20, 65);
-            doc.setFontSize(11);
-            doc.setTextColor(60, 60, 60);
-            doc.setFont("helvetica", "normal");
-            doc.text("Innovative web developer with 3+ years of experience building immersive web experiences.", 20, 75);
-            doc.text("Expert in Three.js, React, Node.js, and creating high-performance interactive UIs.", 20, 83);
-            
-            doc.setFontSize(14);
-            doc.setTextColor(6, 182, 212);
-            doc.setFont("helvetica", "bold");
-            doc.text("TECHNICAL SKILLS", 20, 100);
-            doc.setFontSize(11);
-            doc.setTextColor(40, 40, 40);
-            doc.setFont("helvetica", "normal");
-            doc.text("• Frontend: React, Vue, TailwindCSS, Three.js, WebGL", 20, 110);
-            doc.text("• Backend: Node.js, Express, Python, Django", 20, 118);
-            doc.text("• Database: MongoDB, PostgreSQL, Firebase", 20, 126);
-            doc.text("• Tools: Git, Docker, Blender, Figma, Vite", 20, 134);
-            
-            doc.setFontSize(14);
-            doc.setTextColor(6, 182, 212);
-            doc.setFont("helvetica", "bold");
-            doc.text("WORK EXPERIENCE", 20, 150);
-            doc.setFontSize(11);
-            doc.setTextColor(0);
-            doc.setFont("helvetica", "bold");
-            doc.text("Freelance Web Developer | 2023 – Present", 20, 160);
-            doc.setFont("helvetica", "normal");
-            doc.text("• Developed 15+ interactive websites for clients across industries.", 22, 168);
-            doc.text("• Integrated 3D animations and real-time data dashboards using Three.js.", 22, 176);
-            doc.text("• Optimized performance and SEO resulting in 40% faster load times.", 22, 184);
-            
-            doc.setFont("helvetica", "bold");
-            doc.text("Open Source Contributor (Three.js / Tailwind UI)", 20, 196);
-            doc.setFont("helvetica", "normal");
-            doc.text("• Contributed to Three.js examples and created reusable 3D components.", 22, 204);
-            
-            doc.setFontSize(14);
-            doc.setTextColor(6, 182, 212);
-            doc.setFont("helvetica", "bold");
-            doc.text("EDUCATION", 20, 220);
-            doc.setFontSize(11);
-            doc.setFont("helvetica", "bold");
-            doc.text("B.Tech Computer Science", 20, 230);
-            doc.setFont("helvetica", "normal");
-            doc.text("Dronacharya College of Engineering, Gurugram | 2022 – 2026", 22, 238);
-            doc.text("CGPA: 8.9/10 | Specialization: Web3, 3D Graphics", 22, 246);
-            
-            doc.setFontSize(10);
-            doc.setTextColor(150, 150, 150);
-            doc.text("Downloaded from Vishal Kumar's official portfolio — Updated 2026", 20, 270);
-            
-            doc.save("Vishal_Kumar_Resume.pdf");
+        sendBtn.addEventListener('click', () => {
+            const msg = chatInput.value.trim();
+            if(msg) { addMsg(msg, true); botReply(msg); chatInput.value = ''; }
         });
+        chatInput.addEventListener('keypress', (e) => { if(e.key === 'Enter') sendBtn.click(); });
+
+        // 8. Testimonials
+        const testis = [
+            { text: "Vishal's 3D portfolio blew me away! He's a creative genius.", author: "— Client A" },
+            { text: "Amazing attention to detail and smooth animations.", author: "— Client B" },
+            { text: "One of the best developers I've worked with. Highly recommend!", author: "— Client C" }
+        ];
+        let ti = 0;
+        const carouselItem = document.querySelector('.carousel-item');
+        function updateTesti() {
+            carouselItem.innerHTML = `<i class="fas fa-quote-left text-cyan-400 text-2xl mb-3"></i><p>${testis[ti].text}</p><h4 class="font-bold mt-3">${testis[ti].author}</h4>`;
+        }
+        document.getElementById('prevTesti').addEventListener('click', () => { ti = (ti-1+testis.length)%testis.length; updateTesti(); });
+        document.getElementById('nextTesti').addEventListener('click', () => { ti = (ti+1)%testis.length; updateTesti(); });
+
+        // 9. Typing animation
+        const roles = ["Full-Stack Dev", "3D Artist", "UI/UX Lover", "Open Source Contributor"];
+        let ri=0, ci=0, del=false;
+        const typedSpan = document.getElementById('typed-text');
+        function typeEffect() {
+            const curr = roles[ri];
+            if (del) { typedSpan.innerText = curr.substring(0, ci-1); ci--; }
+            else { typedSpan.innerText = curr.substring(0, ci+1); ci++; }
+            if (!del && ci === curr.length) { del = true; setTimeout(typeEffect, 2000); return; }
+            if (del && ci === 0) { del = false; ri = (ri+1)%roles.length; setTimeout(typeEffect, 500); return; }
+            setTimeout(typeEffect, del ? 50 : 100);
+        }
+        typeEffect();
+
+        // 10. Theme toggle
+        document.getElementById('themeToggle').addEventListener('click', () => {
+            document.body.classList.toggle('dark');
+            document.body.classList.toggle('light');
+            const icon = document.querySelector('#themeToggle i');
+            if(document.body.classList.contains('dark')) icon.classList.replace('fa-sun', 'fa-moon');
+            else icon.classList.replace('fa-moon', 'fa-sun');
+        });
+
+        // 11. Admin panel
+        document.body.addEventListener('dblclick', () => {
+            document.getElementById('adminPanel').classList.toggle('show');
+        });
+
+        // 12. Mobile menu
+        document.getElementById('mobile-menu-button').addEventListener('click', () => {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        });
+
+        // 13. Year
+        document.getElementById('year').innerText = new Date().getFullYear();
+
+        // 14. Page transition
+        const overlay = document.getElementById('transitionOverlay');
+        let transitioning = false;
+        document.querySelectorAll('[data-page]').forEach(link => {
+            link.addEventListener('click', (e) => {
+                const href = link.getAttribute('href');
+                if (!href || href === '#' || transitioning) return;
+                e.preventDefault();
+                transitioning = true;
+                overlay.classList.add('active');
+                setTimeout(() => { window.location.href = href; }, 900);
+            });
+        });
+
+        // 15. Mouse orb (existing)
+        const orb = document.getElementById('mouseOrb');
+        document.addEventListener('mousemove', (e) => {
+            orb.style.left = e.clientX - 30 + 'px';
+            orb.style.top = e.clientY - 30 + 'px';
+        });
+
+        // 16. Parallax
+        window.addEventListener('scroll', () => {
+            const scrolled = window.scrollY;
+            document.getElementById('parallaxLayer').style.transform = `translateY(${scrolled * 0.2}px)`;
+        });
+
+        console.log("🚀 All CSS/Animation effects added successfully!");
     </script>
 </body>
 </html>
